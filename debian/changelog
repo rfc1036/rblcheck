@@ -1,3 +1,37 @@
+rblcheck (20020316-2) unstable; urgency=medium
+
+  * Removed ORBZ zones (Closes: #139216).
+
+ -- Marco d'Itri <md@linux.it>  Wed, 20 Mar 2002 20:30:07 +0100
+
+rblcheck (20020316-1) unstable; urgency=low
+
+  * New upstream release.
+  * More zones added: dnsbl.njabl.org, ztl.dorkslayers.com,
+    blacklist.spambag.org, opm.blitzed.org. Removed orbs.dorkslayers.com.
+
+ -- Marco d'Itri <md@linux.it>  Sat, 16 Mar 2002 15:01:21 +0100
+
+rblcheck (20010424-5) unstable; urgency=medium
+
+  * Removed dead ORBZ zone.
+
+ -- Marco d'Itri <md@linux.it>  Thu, 13 Dec 2001 01:44:56 +0100
+
+rblcheck (20010424-4) unstable; urgency=medium
+
+  * Removed dead orbl.org zone (Closes: #115592)
+
+ -- Marco d'Itri <md@linux.it>  Sat,  3 Nov 2001 14:53:05 +0100
+
+rblcheck (20010424-3) unstable; urgency=low
+
+  * Removed references to MAPS domains (Closes: #104523).
+  * Added other ORBS clones (Closes: #103540).
+  * Added build dependency on w3m (Closes: #97503).
+
+ -- Marco d'Itri <md@linux.it>  Fri,  3 Aug 2001 19:49:00 +0200
+
 rblcheck (20010424-2) unstable; urgency=low
 
   * Removed references to ORBS, added references to ORBS clones

@@ -62,3 +62,11 @@
 /* ORDB: Open Relay DataBase
    http://www.ordb.org/ */
 /* SITE("relays.ordb.org") */
+
+
+SITE("relays.osirusoft.com")	// merge of all osirusoft zones
+SITE("relays.ordb.org")
+SITE("dnsbl.njabl.org")
+SITE("ztl.dorkslayers.com")
+SITE("blacklist.spambag.org")
+SITE("opm.blitzed.org")
