@@ -3,7 +3,7 @@ Section: net
 Priority: extra
 Maintainer: Marco d'Itri <md@linux.it>
 Build-Depends: debhelper, sgmltools-lite, lynx
-Standards-Version: 3.6.0
+Standards-Version: 3.6.1
 
 Package: rblcheck
 Architecture: any

@@ -1,3 +1,11 @@
+rblcheck (20020316-5) unstable; urgency=high
+
+  * Removed *.easynet.nl. (Closes: #224630)
+  * Added dul.dnsbl.sorbs.net.
+  * cbl.abuseat.org changed in xbl.spamhaus.org.
+
+ -- Marco d'Itri <md@linux.it>  Fri,  2 Jan 2004 23:15:56 +0100
+
 rblcheck (20020316-4) unstable; urgency=low
 
   * Removed relays.osirusoft.com. (Closes: #207472)
