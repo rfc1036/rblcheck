@@ -59,3 +59,9 @@
 /* SITE("spamsource-netblocks.orbs.org") */
 /* SITE("testing.orbs.org") */
 /* SITE("ok.orbs.org") */
+SITE("blackholes.mail-abuse.org")
+SITE("dialups.mail-abuse.org")
+SITE("relays.mail-abuse.org")
+SITE("or.orbl.org")
+SITE("orbz.gst-group.co.uk")
+SITE("relays.ordb.org")

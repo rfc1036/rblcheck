@@ -1,0 +1,21 @@
+Source: rblcheck
+Section: net
+Priority: extra
+Maintainer: Marco d'Itri <md@linux.it>
+Build-Depends: debhelper, sgmltools-2
+Standards-Version: 3.1.1
+
+Package: rblcheck
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: dnsutils (<< 1:9.0.0)
+Replaces: dnsutils (<< 1:9.0.0)
+Description: Tool to Query RBL Servers
+ This program is a very basic interface to DNS listings such as the RBL
+ filter developed by Paul Vixie and the MAPS project. The basic idea of the
+ filter is that when someone is blacklisted for email abuse of some sort, a
+ new domain name is resolved of the form "2.0.0.127.domain.name.com", where
+ 2.0.0.127 is the abusive IP address in reverse (for example, 2.0.0.127
+ would be the IP address 127.0.0.2), and "domain.name.com" is the base
+ domain name of the filtering service (such as "blackholes.mail-abuse.org"
+ for the MAPS project RBL filter).

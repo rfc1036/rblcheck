@@ -1,0 +1,39 @@
+rblcheck (20010424-2) unstable; urgency=low
+
+  * Removed references to ORBS, added references to ORBS clones
+    (Closes: #101461).
+
+ -- Marco d'Itri <md@linux.it>  Mon,  2 Jul 2001 21:16:32 +0200
+
+rblcheck (20010424-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Marco d'Itri <md@linux.it>  Tue, 24 Apr 2001 19:31:56 +0200
+
+rblcheck (20010130-3) unstable; urgency=medium
+
+  * Updated mail-abuse.org domains.
+
+ -- Marco d'Itri <md@linux.it>  Sun,  4 Feb 2001 20:42:43 +0100
+
+rblcheck (20010130-2) unstable; urgency=low
+
+  * Fixed broken -t option.
+
+ -- Marco d'Itri <md@linux.it>  Fri,  2 Feb 2001 14:00:49 +0100
+
+rblcheck (20010130-1) unstable; urgency=low
+
+  * New upstream version, new maintainer.
+  * WARNING: new checks have been added to the default list.
+
+ -- Marco d'Itri <md@linux.it>  Wed, 31 Jan 2001 14:41:30 +0100
+
+rblcheck (19990221-1) unstable; urgency=low
+
+  * New upstream version, and first release as an independent package.  Was
+    formerly part of dnsutils, separated as part of the restructuring motivated
+    by the release of BIND 9.
+
+ -- Bdale Garbee <bdale@gag.com>  Sat, 27 Jan 2001 02:08:58 -0700

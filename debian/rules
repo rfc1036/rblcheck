@@ -1,0 +1,49 @@
+#!/usr/bin/make -f
+
+# Make the shell exit with an error if an untested command fails.
+SHELL+= -e
+#export DH_VERBOSE=1
+export DH_COMPAT=2
+
+build: build-stamp
+build-stamp:
+	$(checkdir)
+	$(CC) -O2 -g -o rblcheck rblcheck.c -lresolv
+	cd docs && sgmltools -b txt rblcheck.sgml
+	touch build-stamp
+
+clean: checkroot
+	$(checkdir)
+	rm -f build-stamp
+	rm -f rblcheck docs/rblcheck.txt
+	-cd debian && rm -rf rblcheck files* substvars *debhelper
+
+binary-arch: checkroot build
+	$(checkdir)
+	-rm -rf debian/rblcheck
+
+	dh_installdirs usr/bin
+	cp rblcheck debian/rblcheck/usr/bin/
+	dh_installdocs README NEWS docs/rblcheck.txt
+	dh_installexamples
+	rm -rf debian/rblcheck/usr/share/doc/rblcheck/examples/*/CVS/
+#	dh_installmanpages
+	dh_undocumented rblcheck.1
+	dh_installchangelogs ChangeLog
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_builddeb
+
+define checkdir
+	test -f debian/rules
+endef
+
+checkroot:
+	test root = "`whoami`"
+	    
+binary: binary-arch
+.PHONY: build clean binary-indep binary-arch binary checkroot
