@@ -3,8 +3,14 @@ Sat, 16 Dec 2000 10:57:57 -0700.
 
 It was downloaded from sourceforge.
 
+The current debian maintainer is Marco d'Itri <md@linux.it>.
+
 Upstream Author: Edward S Marshall <emarshal@xnet.com>
 
 Copyright:
 	Copyright (C) 1997, Edward S. Marshall <emarshal@logic.net>
 	Licensed under the GPL, Version 2
+
+On Debian systems, the complete text of the GNU General Public License
+can be found in `/usr/share/common-licenses/GPL'.
+

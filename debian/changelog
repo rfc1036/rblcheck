@@ -1,3 +1,19 @@
+rblcheck (20020316-4) unstable; urgency=low
+
+  * Removed relays.osirusoft.com. (Closes: #207472)
+  * Removed proxies.relays.monkeys.com, opm.blitzed.org and relays.ordb.org.
+  * Added cbl.abuseat.org, sbl.spamhaus.org, blackholes.easynet.nl,
+    dynablock.easynet.nl, l1.spews.dnsbl.sorbs.net.
+
+ -- Marco d'Itri <md@linux.it>  Wed, 27 Aug 2003 20:59:26 +0200
+
+rblcheck (20020316-3) unstable; urgency=medium
+
+  * Removed ztl.dorkslayers.com, blacklist.spambag.org and
+    relays.ordb.org, added list.dsbl.org and proxies.relays.monkeys.com.
+
+ -- Marco d'Itri <md@linux.it>  Thu, 23 Jan 2003 13:32:24 +0100
+
 rblcheck (20020316-2) unstable; urgency=medium
 
   * Removed ORBZ zones (Closes: #139216).

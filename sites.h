@@ -64,9 +64,11 @@
 /* SITE("relays.ordb.org") */
 
 
-SITE("relays.osirusoft.com")	// merge of all osirusoft zones
-SITE("relays.ordb.org")
+SITE("cbl.abuseat.org")
+SITE("list.dsbl.org")
+SITE("blackholes.easynet.nl")
+SITE("dynablock.easynet.nl")
 SITE("dnsbl.njabl.org")
-SITE("ztl.dorkslayers.com")
-SITE("blacklist.spambag.org")
-SITE("opm.blitzed.org")
+SITE("sbl.spamhaus.org")
+SITE("l1.spews.dnsbl.sorbs.net")
+

@@ -1,34 +1,36 @@
 #!/usr/bin/make -f
-
-# Make the shell exit with an error if an untested command fails.
 SHELL+= -e
+
 #export DH_VERBOSE=1
-export DH_COMPAT=2
+
+D := $(CURDIR)/debian/rblcheck
 
 build: build-stamp
 build-stamp:
-	$(checkdir)
+	dh_testdir
 	$(CC) -O2 -g -o rblcheck rblcheck.c -lresolv
-	cd docs && sgmltools -b txt rblcheck.sgml
-	touch build-stamp
+	cd docs && sgmltools -b lynx rblcheck.sgml
+#	cd docs && sgmltools -b onehtml rblcheck.sgml
+	touch $@
 
-clean: checkroot
-	$(checkdir)
+clean:
+	dh_testroot
+	dh_testdir
 	rm -f build-stamp
-	rm -f rblcheck docs/rblcheck.txt
-	-cd debian && rm -rf rblcheck files* substvars *debhelper
+	rm -f rblcheck docs/rblcheck.txt docs/rblcheck.html
+	dh_clean
 
-binary-arch: checkroot build
-	$(checkdir)
-	-rm -rf debian/rblcheck
+binary-arch: build
+	dh_testroot
+	dh_testdir
+	dh_clean -k
 
 	dh_installdirs usr/bin
-	cp rblcheck debian/rblcheck/usr/bin/
-	dh_installdocs README NEWS docs/rblcheck.txt
+	cp rblcheck $D/usr/bin/
+	dh_installdocs README NEWS docs/rblcheck.txt # docs/rblcheck.html
 	dh_installexamples
-	rm -rf debian/rblcheck/usr/share/doc/rblcheck/examples/*/CVS/
+	rm -rf $D/usr/share/doc/rblcheck/examples/*/CVS/
 #	dh_installmanpages
-	dh_undocumented rblcheck.1
 	dh_installchangelogs ChangeLog
 	dh_strip
 	dh_compress
@@ -38,12 +40,6 @@ binary-arch: checkroot build
 	dh_gencontrol
 	dh_builddeb
 
-define checkdir
-	test -f debian/rules
-endef
-
-checkroot:
-	test root = "`whoami`"
-	    
 binary: binary-arch
-.PHONY: build clean binary-indep binary-arch binary checkroot
+
+.PHONY: build clean binary-arch binary
