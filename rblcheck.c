@@ -17,7 +17,7 @@
 ** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
-** $Id: rblcheck.c,v 1.12 2001/04/02 22:19:57 logic Exp $
+** $Id: rblcheck.c,v 1.14 2001/11/08 22:05:27 logic Exp $
 **
 */
 
@@ -110,7 +110,7 @@ int firstmatch = 0;
 void version()
 {
 	fprintf( stderr,
-	  "%s %s, Copyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n",
+	  "%s %s\nCopyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n",
 	  PACKAGE, VERSION );
 }
 
