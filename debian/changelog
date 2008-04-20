@@ -1,3 +1,14 @@
+rblcheck (20020316-6) unstable; urgency=low
+
+  * Added a man page for rblcheck(1). (Closes: #87114, #131541)
+  * Added the binary-indep target to debian/rules. (Closes: #395740)
+  * Fixed the help text for the -s option. (Closes: #285310)
+  * Removed SPEWS.
+  * Added pbl.spamhaus.org and bl.spamcop.net. (Closes: #406071)
+  * s/RBL/DNSBL/ where practical.
+
+ -- Marco d'Itri <md@linux.it>  Sun, 20 Apr 2008 17:37:50 +0200
+
 rblcheck (20020316-5) unstable; urgency=high
 
   * Removed *.easynet.nl. (Closes: #224630)

@@ -30,7 +30,7 @@ binary-arch: build
 	dh_installdocs README NEWS docs/rblcheck.txt # docs/rblcheck.html
 	dh_installexamples
 	rm -rf $D/usr/share/doc/rblcheck/examples/*/CVS/
-#	dh_installmanpages
+	dh_installman rblcheck.1
 	dh_installchangelogs ChangeLog
 	dh_strip
 	dh_compress
@@ -40,6 +40,8 @@ binary-arch: build
 	dh_gencontrol
 	dh_builddeb
 
+binary-indep:
+
 binary: binary-arch
 
-.PHONY: build clean binary-arch binary
+.PHONY: build clean binary-arch binary-indep binary

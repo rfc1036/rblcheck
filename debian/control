@@ -2,8 +2,10 @@ Source: rblcheck
 Section: net
 Priority: extra
 Maintainer: Marco d'Itri <md@linux.it>
-Build-Depends: debhelper, sgmltools-lite, lynx
-Standards-Version: 3.6.1
+Vcs-Svn: https://rblcheck.svn.sourceforge.net/svnroot/rblcheck
+Vcs-Browser: http://rblcheck.svn.sourceforge.net/viewvc/rblcheck/
+Build-Depends: debhelper (>= 4.2), sgmltools-lite, lynx
+Standards-Version: 3.7.3
 
 Package: rblcheck
 Architecture: any
@@ -17,3 +19,4 @@ Description: Tool to Query RBL Servers
  "2.0.0.127.domain.name.com", where 2.0.0.127 is the abusive IP address
  in reverse (for example, 2.0.0.127 would be the IP address 127.0.0.2),
  and "domain.name.com" is the base domain name of the filtering service.
+Homepage: http://rblcheck.wiki.sourceforge.net/
