@@ -5,10 +5,12 @@ SHELL+= -e
 
 D := $(CURDIR)/debian/rblcheck
 
+CFLAGS ?= -O2 -g
+
 build: build-stamp
 build-stamp:
 	dh_testdir
-	$(CC) -O2 -g -o rblcheck rblcheck.c -lresolv
+	$(CC) $(CFLAGS) -o rblcheck rblcheck.c -lresolv
 	cd docs && sgmltools -b lynx rblcheck.sgml
 #	cd docs && sgmltools -b onehtml rblcheck.sgml
 	touch $@

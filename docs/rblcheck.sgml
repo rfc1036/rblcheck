@@ -299,9 +299,7 @@ The program has several command line options:
 <Row>
 <Entry><Option>-q</Option></Entry>
 <Entry><Para>
-Be quiet about whether the IP address was matched or not. Handy for
-automatic processing scripts which just check the return code of 
-rblcheck.
+Display only listed addresses, if none is listed then there is no output.
 </Para></Entry>
 </Row>
 <Row>

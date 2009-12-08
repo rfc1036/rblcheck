@@ -1,3 +1,11 @@
+rblcheck (20020316-7) unstable; urgency=medium
+
+  * Removed the dead list.dsbl.org zone.
+  * Added psbl.surriel.com.
+  * Clarified the semantics of -q in the documentation. (Closes: #128043)
+
+ -- Marco d'Itri <md@linux.it>  Tue, 08 Dec 2009 16:43:30 +0100
+
 rblcheck (20020316-6) unstable; urgency=low
 
   * Added a man page for rblcheck(1). (Closes: #87114, #131541)

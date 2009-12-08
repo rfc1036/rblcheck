@@ -68,7 +68,7 @@ SITE("sbl.spamhaus.org");
 SITE("xbl.spamhaus.org");
 SITE("pbl.spamhaus.org");
 SITE("bl.spamcop.net");
-SITE("list.dsbl.org");
+SITE("psbl.surriel.com");
 SITE("dnsbl.njabl.org");
 SITE("dul.dnsbl.sorbs.net");
 

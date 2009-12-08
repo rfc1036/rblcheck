@@ -4,8 +4,8 @@ Priority: extra
 Maintainer: Marco d'Itri <md@linux.it>
 Vcs-Svn: https://rblcheck.svn.sourceforge.net/svnroot/rblcheck
 Vcs-Browser: http://rblcheck.svn.sourceforge.net/viewvc/rblcheck/
-Build-Depends: debhelper (>= 4.2), sgmltools-lite, lynx
-Standards-Version: 3.7.3
+Build-Depends: debhelper (>= 5), sgmltools-lite, lynx
+Standards-Version: 3.8.3
 
 Package: rblcheck
 Architecture: any
