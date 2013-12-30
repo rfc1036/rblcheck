@@ -1,7 +1,8 @@
 #!/usr/bin/make -f
 SHELL+= -e
 
-#export DH_VERBOSE=1
+DPKG_EXPORT_BUILDFLAGS = 1
+-include /usr/share/dpkg/buildflags.mk
 
 D := $(CURDIR)/debian/rblcheck
 
@@ -10,22 +11,22 @@ CFLAGS ?= -O2 -g
 build: build-stamp
 build-stamp:
 	dh_testdir
-	$(CC) $(CFLAGS) -o rblcheck rblcheck.c -lresolv
-	cd docs && sgmltools -b lynx rblcheck.sgml
-#	cd docs && sgmltools -b onehtml rblcheck.sgml
+	$(CC) $(CFLAGS) -o rblcheck rblcheck.c $(LDFLAGS) -lresolv
+	perl -pe '/ (id|linkend)=/ and s/_/\1-/g' < docs/rblcheck.sgml > docs/rblcheck.tmp.sgml 
+#	cd docs && docbook2html rblcheck.tmp.sgml -V nochunks && mv rblcheck.tmp.html rblcheck.html
+	cd docs && docbook2txt rblcheck.tmp.sgml && mv rblcheck.tmp.txt rblcheck.txt
 	touch $@
 
 clean:
-	dh_testroot
 	dh_testdir
 	rm -f build-stamp
-	rm -f rblcheck docs/rblcheck.txt docs/rblcheck.html
+	rm -f rblcheck docs/rblcheck.txt docs/rblcheck.html docs/rblcheck.tmp.*
 	dh_clean
 
 binary-arch: build
 	dh_testroot
 	dh_testdir
-	dh_clean -k
+	dh_prep
 
 	dh_installdirs usr/bin
 	cp rblcheck $D/usr/bin/
@@ -40,10 +41,14 @@ binary-arch: build
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
+	dh_md5sums
 	dh_builddeb
 
 binary-indep:
 
 binary: binary-arch
+
+build-arch: build
+build-indep: build
 
 .PHONY: build clean binary-arch binary-indep binary

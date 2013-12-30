@@ -2,21 +2,17 @@ Source: rblcheck
 Section: net
 Priority: extra
 Maintainer: Marco d'Itri <md@linux.it>
-Vcs-Svn: https://rblcheck.svn.sourceforge.net/svnroot/rblcheck
-Vcs-Browser: http://rblcheck.svn.sourceforge.net/viewvc/rblcheck/
-Build-Depends: debhelper (>= 5), sgmltools-lite, lynx
-Standards-Version: 3.8.3
+Standards-Version: 3.9.5
+Build-Depends: debhelper (>= 8), docbook-utils, lynx
 
 Package: rblcheck
 Architecture: any
-Depends: ${shlibs:Depends}
-Conflicts: dnsutils (<< 1:9.0.0)
-Replaces: dnsutils (<< 1:9.0.0)
-Description: Tool to Query RBL Servers
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Tool to query DNSBL servers
  This program is a very basic interface to DNS Blackhole Lists.
  The basic idea of the filter is that when someone is blacklisted for
  email abuse of some sort, a new domain name is resolved of the form
  "2.0.0.127.domain.name.com", where 2.0.0.127 is the abusive IP address
  in reverse (for example, 2.0.0.127 would be the IP address 127.0.0.2),
  and "domain.name.com" is the base domain name of the filtering service.
-Homepage: http://rblcheck.wiki.sourceforge.net/
+Homepage: http://sourceforge.net/projects/rblcheck/

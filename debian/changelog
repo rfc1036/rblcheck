@@ -1,3 +1,11 @@
+rblcheck (20020316-8) unstable; urgency=medium
+
+  * Switched from sgmltools-lite to docbook-utils.
+  * Removed the dead dnsbl.njabl.org zone.
+  * Added md5sums. (Closes: #697083)
+
+ -- Marco d'Itri <md@linux.it>  Mon, 30 Dec 2013 08:14:59 +0100
+
 rblcheck (20020316-7) unstable; urgency=medium
 
   * Removed the dead list.dsbl.org zone.

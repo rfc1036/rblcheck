@@ -11,6 +11,5 @@ Copyright:
 	Copyright (C) 1997, Edward S. Marshall <emarshal@logic.net>
 	Licensed under the GPL, Version 2
 
-On Debian systems, the complete text of the GNU General Public License
-can be found in `/usr/share/common-licenses/GPL'.
+License: GPLv2+ (please see /usr/share/common-licenses/GPL-2).
 

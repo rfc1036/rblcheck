@@ -62,13 +62,3 @@
 /* ORDB: Open Relay DataBase
    http://www.ordb.org/ */
 /* SITE("relays.ordb.org") */
-
-
-SITE("sbl.spamhaus.org");
-SITE("xbl.spamhaus.org");
-SITE("pbl.spamhaus.org");
-SITE("bl.spamcop.net");
-SITE("psbl.surriel.com");
-SITE("dnsbl.njabl.org");
-SITE("dul.dnsbl.sorbs.net");
-

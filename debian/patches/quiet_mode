@@ -1,0 +1,41 @@
+--- a/docs/rblcheck.sgml
++++ b/docs/rblcheck.sgml
+@@ -299,9 +299,7 @@ The program has several command line opt
+ <Row>
+ <Entry><Option>-q</Option></Entry>
+ <Entry><Para>
+-Be quiet about whether the IP address was matched or not. Handy for
+-automatic processing scripts which just check the return code of 
+-rblcheck.
++Display only listed addresses, if none is listed then there is no output.
+ </Para></Entry>
+ </Row>
+ <Row>
+--- a/rblcheck.c
++++ b/rblcheck.c
+@@ -122,12 +122,12 @@ void usage()
+ 	fprintf( stderr,
+ 	  "Usage: %s [-qtlcvh?] [-s <service>] <address> [ <address> ... ]\n\
+ \n\
+-    -q           Quiet mode; no output\n\
++    -q           Quiet mode; print only listed addresses\n\
+     -t           Print a TXT record, if any\n\
+     -m           Stop checking after first address match in any list\n\
+-    -l           List default RBL services to check\n\
+-    -c           Clear the current list of RBL services\n\
+-    -s <service> Add a new service to the RBL services list\n\
++    -l           List default DNSBL services to check\n\
++    -c           Clear the current list of DNSBL services\n\
++    -s <service> Toggle a service to the DNSBL services list\n\
+     -h, -?       Display this help message\n\
+     -v           Display version information\n\
+     <address>    An IP address to look up; specify `-' to read multiple\n\
+@@ -308,7 +308,7 @@ int full_rblcheck( char * addr )
+ 		if( !quiet || response )
+ 			printf( "%s %s%s%s%s%s%s", addr,
+ 			  ( !quiet && !response ? "not " : "" ),
+-			  ( !quiet ? "RBL filtered by " : "" ),
++			  ( !quiet ? "listed by " : "" ),
+ 			  ( !quiet ? ptr->site : "" ),
+ 			  ( txt && response && strlen( response ) && !quiet ?
+ 			    ": " : "" ),
