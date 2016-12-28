@@ -1,0 +1,18 @@
+Changes since 1.4:
+
+- Converted to automake/autoconf for configuration, which should make
+  it easier to extend portability.
+
+- Added support for checking multiple addresses in one invokation.
+
+- Added support for reading addresses to check from standard input, by
+  specifying an argument of '-'.
+
+- Updated sites.h to mesh with current reality (almost ALL of the sites
+  listed had changed since the last update). Added a recommendation that
+  distribution maintainers NOT enable any of the listings by default.
+
+- Converted documentation to docbook, with a script for automatically
+  generating html, ps, and rtf formats.
+
+- Added an RPM spec file.
