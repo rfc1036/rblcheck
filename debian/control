@@ -17,4 +17,4 @@ Description: Tool to query DNSBL servers
  "2.0.0.127.domain.name.com", where 2.0.0.127 is the abusive IP address
  in reverse (for example, 2.0.0.127 would be the IP address 127.0.0.2),
  and "domain.name.com" is the base domain name of the filtering service.
-Homepage: http://sourceforge.net/projects/rblcheck/
+Homepage: https://github.com/logic/rblcheck
