@@ -1,3 +1,9 @@
+rblcheck (20020316-9) unstable; urgency=medium
+
+  * Switched to debhelper compat level 10.
+
+ -- Marco d'Itri <md@linux.it>  Wed, 28 Dec 2016 16:49:41 +0100
+
 rblcheck (20020316-8) unstable; urgency=medium
 
   * Switched from sgmltools-lite to docbook-utils.
