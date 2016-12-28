@@ -1,0 +1,84 @@
+Changes since 1.4:
+
+- Converted to automake/autoconf for configuration, which should make
+  it easier to extend portability.
+
+- Added support for checking multiple addresses in one invokation.
+
+- Added support for reading addresses to check from standard input, by
+  specifying an argument of '-'.
+
+- Updated sites.h to mesh with current reality (almost ALL of the sites
+  listed had changed since the last update). Added a recommendation that
+  distribution maintainers NOT enable any of the listings by default.
+
+- Converted documentation to docbook, with a script for automatically
+  generating html, ps, and rtf formats.
+
+- Added an RPM spec file.
+
+Changes since 1.3:
+
+- Fixed output bug with some odd combinations of -q and -t.
+
+- Added T_TXT and PACKETSZ definitions in the event that some systems
+  might not define them.
+
+- Fixed error with return values not matching the advertised values.
+
+- Fixed bug with rbl.dorkslayers.com's tendancy to use CNAMEs for
+  everything.
+
+- Added support to dynamically grow the buffer used by res_query(), so
+  that we can always support whatever the RBLs send back to us.
+
+- Minor documentation fixes.
+
+Changes since 1.2:
+
+- New feature: the ability to query multiple RBL-alike services in
+  one invokation.
+
+- New command-line option: -l (list known RBL services)
+
+- New command-line option: -s <service> (toggle an RBL service)
+
+- New command-line option: -c (clear the list of RBL services)
+
+- Compat-buster: formatting of the output has changed slightly, to
+  accomodate multiple RBL services. The new output includes the name
+  of the server currently being checked (ie. "RBL filtered by ..."),
+  and there can be multiple outputs of "(not) RBL filtered by ...".
+
+- Added a very basic "install" target to the Makefile.
+
+- Some generalization of the code.
+
+Changes since 1.1:
+
+- a bunch of portability fixes, plus some minor code cleanup to make
+  things a little more comfortable on multiple platforms. Should now
+  compile on K&R-only systems, and on machines with wierd resolver
+  libraries.
+
+Changes since 1.0:
+
+- clarified the procmail recipe in INSTALL to include some logic to
+  prevent problems with local email if the system rblcheck is running
+  on has actually been blacklisted.
+
+- Noticed a glaring error in QMail support: TCPREMOTEIP is NOT passed
+  on to .qmail-executed programs. Damn.
+
+- added origip.c and origip.awk to obtain the sender's IP address from
+  QMail headers.
+
+- added "docs" and "utils" directories to organize things a bit better.
+
+- added "extern int optind;" to make some platforms a little happier.
+
+- fixed compilation on NeXT.
+
+- added some useful usage output, and added a '-v' flag for version info.
+
+- added a '-t' flag for displaying of TXT RRs.
