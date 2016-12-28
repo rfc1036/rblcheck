@@ -1,0 +1,4 @@
+#!/bin/sh
+@bindir@/rblcheck `
+  [ -f "@sysconfdir@/rblcheckrc" ] && cat "@sysconfdir@/rblcheckrc";
+  [ -f "$HOME/.rblcheckrc" ] && cat "$HOME/.rblcheckrc"` $*

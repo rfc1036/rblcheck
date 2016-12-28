@@ -17,7 +17,7 @@
 ** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
-** $Id: rblcheck.c,v 1.12 2001/04/02 22:19:57 logic Exp $
+** $Id: rblcheck.c,v 1.14 2001/11/08 22:05:27 logic Exp $
 **
 */
 
@@ -110,7 +110,7 @@ int firstmatch = 0;
 void version()
 {
 	fprintf( stderr,
-	  "%s %s, Copyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n",
+	  "%s %s\nCopyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n",
 	  PACKAGE, VERSION );
 }
 
@@ -230,10 +230,10 @@ char * rblcheck( int a, int b, int c, int d, char * rbldomain, int txt )
 	   be a performance hit, since it'll now be cached at the
 	   nameserver we're using. */
 	res_init();
-	res_query( domain, C_IN, T_TXT, answer, PACKETSZ );
+	len = res_query( domain, C_IN, T_TXT, answer, PACKETSZ );
 
 	/* Just in case there's no TXT record... */
-	if( h_errno != 0 )
+	if( len == -1 )
 	{
 		return result;
 	}

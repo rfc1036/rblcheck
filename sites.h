@@ -45,17 +45,20 @@
 /* SITE("dialups.mail-abuse.org") */
 
 /* MBL: Mike's Black List
-   http://groups.google.com/groups?ic=1&th=4d82c61a4da48d0a */
+   http://groups.google.com/groups?ic=1&th=26aaeffd51692527,1
+   Please note: This URL seems to change frequently. See era's list above
+   for more current information. */
 /* SITE("3y.spam.mrs.kithrup.com") */
 
-/* ORBS: Open Relay Behaviour-modification System
-   http://www.orbs.org/ */
-/* SITE("inputs.orbs.org") */
-/* SITE("outputs.orbs.org") */
-/* SITE("delayed-outputs.orbs.org") */
-/* SITE("manual.orbs.org") */
-/* SITE("spamsources.orbs.org") */
-/* SITE("untestable-netblocks.orbs.org") */
-/* SITE("spamsource-netblocks.orbs.org") */
-/* SITE("testing.orbs.org") */
-/* SITE("ok.orbs.org") */
+/* ORBL: Open Relay Black List
+   http://www.orbl.org/ */
+/* SITE("or.orbl.org") */
+
+/* ORBZ: Open Relay Block Zone
+   http://www.orbz.gst-group.co.uk/orbs/ */
+/* SITE("orbz.gst-group.co.uk") */
+/* SITE("manual.orbz.gst-group.co.uk") */
+
+/* ORDB: Open Relay DataBase
+   http://www.ordb.org/ */
+/* SITE("relays.ordb.org") */
