@@ -1,3 +1,10 @@
+rblcheck (20020316-10) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS: use the host architecture compiler. (Closes: #882457)
+
+ -- Marco d'Itri <md@linux.it>  Sun, 26 Nov 2017 12:40:52 +0100
+
 rblcheck (20020316-9) unstable; urgency=medium
 
   * Switched to debhelper compat level 10.
