@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-SHELL+= -e
 
 DPKG_EXPORT_BUILDFLAGS = 1
 -include /usr/share/dpkg/buildflags.mk
@@ -7,49 +6,18 @@ DPKG_EXPORT_BUILDFLAGS = 1
 
 D := $(CURDIR)/debian/rblcheck
 
-CFLAGS ?= -O2 -g
+%:
+	dh $@ --without autoreconf
 
-build: build-stamp
-build-stamp:
-	dh_testdir
+override_dh_clean:
+	dh_clean rblcheck docs/rblcheck.txt docs/rblcheck.html docs/rblcheck.tmp.*
+
+override_dh_auto_build:
 	$(CC) $(CFLAGS) -o rblcheck rblcheck.c $(LDFLAGS) -lresolv
 	perl -pe '/ (id|linkend)=/ and s/_/\1-/g' < docs/rblcheck.sgml > docs/rblcheck.tmp.sgml 
-#	cd docs && docbook2html rblcheck.tmp.sgml -V nochunks && mv rblcheck.tmp.html rblcheck.html
 	cd docs && docbook2txt rblcheck.tmp.sgml && mv rblcheck.tmp.txt rblcheck.txt
-	touch $@
 
-clean:
-	dh_testdir
-	rm -f build-stamp
-	rm -f rblcheck docs/rblcheck.txt docs/rblcheck.html docs/rblcheck.tmp.*
-	dh_clean
-
-binary-arch: build
-	dh_testroot
-	dh_testdir
-	dh_prep
-
-	dh_installdirs usr/bin
-	cp rblcheck $D/usr/bin/
-	dh_installdocs README NEWS docs/rblcheck.txt # docs/rblcheck.html
+override_dh_installexamples:
 	dh_installexamples
 	rm -rf $D/usr/share/doc/rblcheck/examples/*/CVS/
-	dh_installman rblcheck.1
-	dh_installchangelogs ChangeLog
-	dh_strip
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
 
-binary-indep:
-
-binary: binary-arch
-
-build-arch: build
-build-indep: build
-
-.PHONY: build clean binary-arch binary-indep binary
