@@ -126,7 +126,7 @@ void usage()
     -s <service> Add a new service to the RBL services list\n\
     -h, -?       Display this help message\n\
     -v           Display version information\n\
-    <address>    An IP address to look up; specify `-' to read multiple\n\
+    <address>    An IP address to look up; specify '-' to read multiple\n\
                  addresses from standard input.\n",
 	    progname);
 }
@@ -282,7 +282,7 @@ int full_rblcheck(char *addr)
 	if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
 	    || a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255
 	    || d < 0 || d > 255) {
-	    fprintf(stderr, "%s: warning: invalid address `%s'\n",
+	    fprintf(stderr, "%s: warning: invalid address '%s'\n",
 		    progname, addr);
 	    return 0;
 	}
@@ -379,7 +379,7 @@ char **argv;
     /* Do we have any listings to search? */
     if (!rblsites) {
 	fprintf(stderr,
-		"%s: no rbl listing(s) specified (need `-s <zone>'?)\n",
+		"%s: no rbl listing(s) specified (need '-s <zone>'?)\n",
 		progname);
 	return 0;
     }
