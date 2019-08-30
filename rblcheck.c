@@ -61,8 +61,8 @@ int firstmatch = 0;
 void *do_nofail(void *, const char *, const int);
 void version(void);
 void usage(void);
-struct rbl *togglesite(char *, struct rbl *);
-char *rblcheck(int, int, int, int, char *, int);
+struct rbl *togglesite(const char *, struct rbl *);
+char *rblcheck(const char *, char *, int);
 int full_rblcheck(char *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
@@ -112,7 +112,7 @@ void usage(void)
 /* togglesite()
  * This function takes the name of the site, and either adds it to the
  * list of sites to check, or removes it if it already exists. */
-struct rbl *togglesite(char *sitename, struct rbl *sites)
+struct rbl *togglesite(const char *sitename, struct rbl *sites)
 {
     struct rbl *ptr;
     struct rbl *last = NULL;
@@ -148,7 +148,7 @@ struct rbl *togglesite(char *sitename, struct rbl *sites)
  * domain. If "txt" is non-zero, we perform a TXT record lookup. We
  * return the text returned from a TXT match, or an empty string, on
  * a successful match, or NULL on an unsuccessful match. */
-char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
+char *rblcheck(const char *addr, char *rbldomain, int txt)
 {
     char *domain;
     char *result = NULL;
@@ -159,6 +159,14 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
     const unsigned char *cend;
     const char *rend;
     int len;
+    int a, b, c, d;
+
+    if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
+	    || a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255
+	    || d < 0 || d > 255) {
+	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
+	return 0;
+    }
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
     domain = NOFAIL(malloc(17 + strlen(rbldomain)));
@@ -244,20 +252,12 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
  * RBL listing, handling output of results if necessary. */
 int full_rblcheck(char *addr)
 {
-    int a, b, c, d;
     int count = 0;
     char *response;
     struct rbl *ptr;
 
     for (ptr = rblsites; ptr != NULL; ptr = ptr->next) {
-	if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
-	    || a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255
-	    || d < 0 || d > 255) {
-	    fprintf(stderr, "%s: warning: invalid address '%s'\n",
-		    progname, addr);
-	    return 0;
-	}
-	response = rblcheck(a, b, c, d, ptr->site, txt);
+	response = rblcheck(addr, ptr->site, txt);
 	if (!quiet || response)
 	    printf("%s %s%s%s%s%s%s", addr,
 		   (!quiet && !response ? "not " : ""),
