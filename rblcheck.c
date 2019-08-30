@@ -55,11 +55,18 @@ int quiet = 0;
 int txt = 0;
 int firstmatch = 0;
 
+/*-- PROTOTYPES -------------------------------------------------------------*/
+void version(void);
+void usage(void);
+struct rbl *togglesite(char *, struct rbl *);
+char *rblcheck(int, int, int, int, char *, int);
+int full_rblcheck(char *);
+
 /*-- FUNCTIONS --------------------------------------------------------------*/
 
 /* version()
  * Display the version of this program back to the user. */
-void version()
+void version(void)
 {
     fprintf(stderr,
 	    "%s %s\nCopyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n",
@@ -68,7 +75,7 @@ void version()
 
 /* usage()
  * Display how to use this program back to the user. */
-void usage()
+void usage(void)
 {
     version();
     fprintf(stderr,
@@ -265,9 +272,7 @@ int full_rblcheck(char *addr)
 
 /*-- MAINLINE ---------------------------------------------------------------*/
 
-int main(argc, argv)
-int argc;
-char **argv;
+int main(int argc, char *argv[])
 {
     int a;
     struct rbl *ptr;
