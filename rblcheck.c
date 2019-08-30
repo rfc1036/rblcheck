@@ -96,9 +96,9 @@ void usage(void)
     -q           Quiet mode; print only listed addresses\n\
     -t           Print a TXT record, if any\n\
     -m           Stop checking after first address match in any list\n\
-    -l           List default RBL services to check\n\
-    -c           Clear the current list of RBL services\n\
-    -s <service> Add a new service to the RBL services list\n\
+    -l           List default DNSBL services to check\n\
+    -c           Clear the current list of DNSBL services\n\
+    -s <service> Toggle a service to the DNSBL services list\n\
     -h, -?       Display this help message\n\
     -v           Display version information\n\
     <address>    An IP address to look up; specify '-' to read multiple\n\
@@ -258,7 +258,7 @@ int full_rblcheck(char *addr)
 	if (!quiet || response)
 	    printf("%s %s%s%s%s%s%s", addr,
 		   (!quiet && !response ? "not " : ""),
-		   (!quiet ? "RBL filtered by " : ""),
+		   (!quiet ? "listed by " : ""),
 		   (!quiet ? ptr->site : ""),
 		   (txt && response && strlen(response) && !quiet ?
 		    ": " : ""),
