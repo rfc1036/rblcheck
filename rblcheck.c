@@ -93,7 +93,7 @@ void usage(void)
     fprintf(stderr,
 	    "Usage: %s [-qtlcvh?] [-s <service>] <address> [ <address> ... ]\n\
 \n\
-    -q           Quiet mode; no output\n\
+    -q           Quiet mode; print only listed addresses\n\
     -t           Print a TXT record, if any\n\
     -m           Stop checking after first address match in any list\n\
     -l           List default RBL services to check\n\
