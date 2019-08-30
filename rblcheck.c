@@ -1,5 +1,5 @@
 /*
-** rblcheck 1.5 - Command-line interface to RBL-style filters.
+** rblcheck - Command-line interface to RBL-style filters.
 ** Copyright (C) 1997, 1998, 1999, 2000, 2001,
 ** Edward S. Marshall <esm@logic.net>
 **
@@ -27,8 +27,6 @@
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <netdb.h>
-
-/*-- PORTABILITY ------------------------------------------------------------*/
 
 #ifdef STDC_HEADERS
 #include <stdlib.h>
@@ -403,4 +401,3 @@ char **argv;
     return rblfiltered;
 }
 
-/* EOF */
