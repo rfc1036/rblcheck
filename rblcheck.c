@@ -101,7 +101,7 @@ struct rbl *togglesite(char *sitename, struct rbl *sites)
 {
     struct rbl *ptr;
     struct rbl *last = NULL;
-    int sitelen;
+    size_t sitelen;
 
     sitelen = strlen(sitename);
 
@@ -144,12 +144,12 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
 {
     char *domain;
     char *result = NULL;
-    u_char fixedans[PACKETSZ];
-    u_char *answer;
-    const u_char *cp;
-    u_char *rp;
-    const u_char *cend;
-    const u_char *rend;
+    unsigned char fixedans[PACKETSZ];
+    unsigned char *answer;
+    const unsigned char *cp;
+    char *rp;
+    const unsigned char *cend;
+    const char *rend;
     int len;
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
