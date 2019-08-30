@@ -21,6 +21,8 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -28,52 +30,8 @@
 #include <resolv.h>
 #include <netdb.h>
 
-#ifdef STDC_HEADERS
-#include <stdlib.h>
-#endif
-
-/* getopt() handling, for Linux (and probably others) */
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
-#endif
-
-/* NeXT puts optind's declaration in libc.h. */
-#ifdef HAVE_LIBC_H
-#include <libc.h>
-#endif
-
-/* FreeBSD 3.x needs this. */
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-/* Unabashedly borrowed from the bind 8.1.1 sources, just in case, since
-   bind 4.x defines these differently, and some don't even have this. */
-
-#ifndef NS_INT16SZ
-#define NS_INT16SZ 2
-#endif
-
-#ifndef NS_INT32SZ
-#define NS_INT32SZ 4
-#endif
-
-#ifndef NS_GET16
-#define NS_GET16(s, cp) { \
-	register unsigned char *t_cp = (unsigned char *)(cp); \
-	(s) = ((unsigned short)t_cp[0] << 8) \
-	    | ((unsigned short)t_cp[1]) \
-	    ; \
-	(cp) += NS_INT16SZ; \
-}
-#endif
-
-#ifndef T_TXT
-#define T_TXT 16
-#endif
-
-#ifndef PACKETSZ
-#define PACKETSZ 512
 #endif
 
 /*-- LOCAL DEFINITIONS ------------------------------------------------------*/
