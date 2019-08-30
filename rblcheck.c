@@ -56,6 +56,7 @@ int txt = 0;
 int firstmatch = 0;
 
 /*-- PROTOTYPES -------------------------------------------------------------*/
+void *do_nofail(void *, const char *, const int);
 void version(void);
 void usage(void);
 struct rbl *togglesite(char *, struct rbl *);
@@ -63,6 +64,17 @@ char *rblcheck(int, int, int, int, char *, int);
 int full_rblcheck(char *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
+
+void *do_nofail(void *ptr, const char *file, const int line)
+{
+    if (ptr)
+	return ptr;
+
+    fprintf(stderr, "Memory allocation failure at %s:%d.", file, line);
+    exit(1);
+}
+
+#define NOFAIL(ptr) do_nofail((ptr), __FILE__, __LINE__)
 
 /* version()
  * Display the version of this program back to the user. */
@@ -117,20 +129,13 @@ struct rbl *togglesite(char *sitename, struct rbl *sites)
 	    return sites;
 	}
     }
-    if (!(ptr = malloc(sizeof(struct rbl)))) {
-	perror("malloc failed");
-	exit(1);
-    }
+    ptr = NOFAIL(malloc(sizeof(struct rbl)));
     if (last)
 	last->next = ptr;
     else
 	sites = ptr;
-    if ((ptr->site = malloc(sitelen + 1)))
-	strcpy(ptr->site, sitename);
-    else {
-	perror("malloc failed");
-	exit(1);
-    }
+    ptr->site = NOFAIL(malloc(sitelen + 1));
+    strcpy(ptr->site, sitename);
     ptr->next = NULL;
     return sites;
 }
@@ -153,7 +158,7 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
     int len;
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
-    domain = malloc(17 + strlen(rbldomain));
+    domain = NOFAIL(malloc(17 + strlen(rbldomain)));
 
     /* Create a domain name, in reverse. */
     sprintf(domain, "%d.%d.%d.%d.%s", d, c, b, a, rbldomain);
@@ -168,13 +173,13 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
 	return result;
 
     if (len > PACKETSZ) {
-	answer = malloc(len);
+	answer = NOFAIL(malloc(len));
 	len = res_query(domain, C_IN, T_A, answer, len);
 	if (len == -1)
 	    return result;
     }
 
-    result = malloc(RESULT_SIZE);
+    result = NOFAIL(malloc(RESULT_SIZE));
     result[0] = '\0';
     if (!txt) {
 	return result;
