@@ -210,8 +210,9 @@ char *rblcheck(const char *addr, char *rbldomain, int txt)
     /* Skip the header and the address we queried. */
     cp = answer + sizeof(HEADER);
     while (*cp != '\0') {
-	a = *cp++;
-	while (a--)
+	unsigned char p;
+	p = *cp++;
+	while (p--)
 	    cp++;
     }
 
@@ -226,22 +227,25 @@ char *rblcheck(const char *addr, char *rbldomain, int txt)
     cp += (NS_INT16SZ * 2) + NS_INT32SZ;
 
     /* Get the length and end of the buffer. */
-    NS_GET16(c, cp);
-    cend = cp + c;
+    NS_GET16(len, cp);
+    cend = cp + len;
 
     /* Iterate over any multiple answers we might have. In
        this context, it's unlikely, but anyway. */
     rp = result;
     rend = result + RESULT_SIZE - 1;
     while (cp < cend && rp < rend) {
-	a = *cp++;
-	if (a != 0)
-	    for (b = a; b > 0 && cp < cend && rp < rend; b--) {
+	unsigned char p;
+	p = *cp++;
+	if (p != 0) {
+	    unsigned char x;
+	    for (x = p; x > 0 && cp < cend && rp < rend; x--) {
 		if (*cp == '\n' || *cp == '"' || *cp == '\\') {
 		    *rp++ = '\\';
 		}
 		*rp++ = *cp++;
 	    }
+	}
     }
     *rp = '\0';
     return result;
