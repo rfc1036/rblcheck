@@ -117,7 +117,7 @@ struct rbl *togglesite(char *sitename, struct rbl *sites)
 	    return sites;
 	}
     }
-    if (!(ptr = (struct rbl *) malloc(sizeof(struct rbl)))) {
+    if (!(ptr = malloc(sizeof(struct rbl)))) {
 	perror("malloc failed");
 	exit(1);
     }
@@ -125,7 +125,7 @@ struct rbl *togglesite(char *sitename, struct rbl *sites)
 	last->next = ptr;
     else
 	sites = ptr;
-    if ((ptr->site = (char *) malloc(sitelen + 1)))
+    if ((ptr->site = malloc(sitelen + 1)))
 	strcpy(ptr->site, sitename);
     else {
 	perror("malloc failed");
@@ -153,7 +153,7 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
     int len;
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
-    domain = (char *) malloc(17 + strlen(rbldomain));
+    domain = malloc(17 + strlen(rbldomain));
 
     /* Create a domain name, in reverse. */
     sprintf(domain, "%d.%d.%d.%d.%s", d, c, b, a, rbldomain);
@@ -174,7 +174,7 @@ char *rblcheck(int a, int b, int c, int d, char *rbldomain, int txt)
 	    return result;
     }
 
-    result = (char *) malloc(RESULT_SIZE);
+    result = malloc(RESULT_SIZE);
     result[0] = '\0';
     if (!txt) {
 	return result;
