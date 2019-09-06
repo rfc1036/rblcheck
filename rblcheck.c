@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
 	    /* Display supported RBL systems. */
 	    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
-	    return 0;
+	    exit(0);
 	case 's':
 	    /* Toggle a particular zone. */
 	    opt->rblsites = togglesite(optarg, opt->rblsites);
@@ -340,18 +340,18 @@ int main(int argc, char *argv[])
 	case 'h':
 	    /* Help */
 	    usage();
-	    return 0;
+	    exit(0);
 	case 'v':
-	    /* Verision */
+	    /* Version */
 	    version();
-	    return 0;
+	    exit(0);
 	}
 
     /* Did they tell us to check anything? */
     if (optind == argc) {
 	fprintf(stderr, "%s: no IP address(es) specified\n", progname);
 	usage();
-	return -1;
+	exit(-1);
     }
 
     /* Do we have any listings to search? */
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr,
 		"%s: no rbl listing(s) specified (need '-s <zone>'?)\n",
 		progname);
-	return 0;
+	exit(0);
     }
 
     /* Loop through the command line. */
@@ -378,6 +378,6 @@ int main(int argc, char *argv[])
 	optind++;
     }
 
-    return rblfiltered;
+    exit(rblfiltered);
 }
 
