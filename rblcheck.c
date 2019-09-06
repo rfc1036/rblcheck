@@ -47,13 +47,13 @@ struct rbl {
     char *site;
     struct rbl *next;
 };
-struct rbl *rblsites = NULL;
 
 /* Name the program was invoked as. */
 const char *progname;
 
 /* Global options. */
 struct opts {
+    struct rbl *rblsites;
     int firstmatch;
     int quiet;
     int txt;
@@ -262,7 +262,7 @@ int full_rblcheck(char *addr, struct opts *opt)
     char *response;
     struct rbl *ptr;
 
-    for (ptr = rblsites; ptr != NULL; ptr = ptr->next) {
+    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next) {
 	response = rblcheck(addr, ptr->site, opt->txt);
 	if (!opt->quiet || response)
 	    printf("%s %s%s%s%s%s%s", addr,
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
     opt = NOFAIL(calloc(1, sizeof(struct opts)));
 
 /* Hack to handle the easy addition of sites at compile time. */
-#define SITE(x) rblsites = togglesite( (x), rblsites );
+#define SITE(x) opt->rblsites = togglesite( (x), opt->rblsites );
 #include "sites.h"
 #undef SITE
 
@@ -319,21 +319,21 @@ int main(int argc, char *argv[])
 	    break;
 	case 'l':
 	    /* Display supported RBL systems. */
-	    for (ptr = rblsites; ptr != NULL; ptr = ptr->next)
+	    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
 	    return 0;
 	case 's':
 	    /* Toggle a particular zone. */
-	    rblsites = togglesite(optarg, rblsites);
+	    opt->rblsites = togglesite(optarg, opt->rblsites);
 	    break;
 	case 'c':
 	    /* Clear the rbl zones. */
-	    ptr = rblsites;
+	    ptr = opt->rblsites;
 	    while (ptr != NULL) {
-		rblsites = ptr->next;
+		opt->rblsites = ptr->next;
 		free(ptr->site);
 		free(ptr);
-		ptr = rblsites;
+		ptr = opt->rblsites;
 	    }
 	    break;
 	case '?':
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
     }
 
     /* Do we have any listings to search? */
-    if (!rblsites) {
+    if (!opt->rblsites) {
 	fprintf(stderr,
 		"%s: no rbl listing(s) specified (need '-s <zone>'?)\n",
 		progname);
