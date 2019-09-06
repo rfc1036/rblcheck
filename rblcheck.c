@@ -54,10 +54,10 @@ const char *progname;
 
 /* Global options. */
 struct opts {
+    int firstmatch;
     int quiet;
     int txt;
 };
-int firstmatch = 0;
 
 /*-- PROTOTYPES -------------------------------------------------------------*/
 void *do_nofail(void *, const char *, const int);
@@ -278,7 +278,7 @@ int full_rblcheck(char *addr, struct opts *opt)
 	    count++;
 	    free(response);
 	}
-	if (firstmatch && count)
+	if (opt->firstmatch && count)
 	    return count;
     }
     return count;
@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
 	    break;
 	case 'm':
 	    /* Stop after first successful match. */
-	    firstmatch = 1;
+	    opt->firstmatch = 1;
 	    break;
 	case 'l':
 	    /* Display supported RBL systems. */
@@ -369,11 +369,11 @@ int main(int argc, char *argv[])
 	    while (fgets(inbuf, RESULT_SIZE - 1, stdin) != NULL) {
 		inbuf[strlen(inbuf) - 1] = '\0';
 		rblfiltered += full_rblcheck(inbuf, opt);
-		if (firstmatch && rblfiltered)
+		if (opt->firstmatch && rblfiltered)
 		    return rblfiltered;
 	} else
 	    rblfiltered += full_rblcheck(argv[optind], opt);
-	if (firstmatch && rblfiltered)
+	if (opt->firstmatch && rblfiltered)
 	    return rblfiltered;
 	optind++;
     }
