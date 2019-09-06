@@ -75,7 +75,7 @@ void *do_nofail(void *ptr, const char *file, const int line)
 	return ptr;
 
     fprintf(stderr, "Memory allocation failure at %s:%d.", file, line);
-    exit(1);
+    exit(-1);
 }
 
 #define NOFAIL(ptr) do_nofail((ptr), __FILE__, __LINE__)
@@ -167,7 +167,7 @@ char *rblcheck(const char *addr, char *rbldomain, int txt)
 	    || a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255
 	    || d < 0 || d > 255) {
 	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
-	return 0;
+	exit(-1);
     }
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr,
 		"%s: no rbl listing(s) specified (need '-s <zone>'?)\n",
 		progname);
-	exit(0);
+	exit(-1);
     }
 
     /* Loop through the command line. */
