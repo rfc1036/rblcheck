@@ -65,6 +65,7 @@ void version(void);
 void usage(void);
 struct rbl *togglesite(const char *, struct rbl *);
 char *rblcheck(const char *, char *, int);
+char *query_dns(const char *, const int);
 int full_rblcheck(char *, struct opts *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
@@ -153,14 +154,6 @@ struct rbl *togglesite(const char *sitename, struct rbl *sites)
 char *rblcheck(const char *addr, char *rbldomain, int txt)
 {
     char *domain;
-    char *result = NULL;
-    unsigned char fixedans[PACKETSZ];
-    unsigned char *answer;
-    const unsigned char *cp;
-    char *rp;
-    const unsigned char *cend;
-    const char *rend;
-    int len;
     int a, b, c, d;
 
     if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
@@ -175,6 +168,20 @@ char *rblcheck(const char *addr, char *rbldomain, int txt)
 
     /* Create a domain name, in reverse. */
     sprintf(domain, "%d.%d.%d.%d.%s", d, c, b, a, rbldomain);
+
+    return query_dns(domain, txt);
+}
+
+char *query_dns(const char *domain, const int txt)
+{
+    char *result = NULL;
+    unsigned char fixedans[PACKETSZ];
+    unsigned char *answer;
+    const unsigned char *cp;
+    char *rp;
+    const unsigned char *cend;
+    const char *rend;
+    int len;
 
     /* Make our DNS query. */
     res_init();
