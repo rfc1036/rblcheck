@@ -54,9 +54,9 @@ const char *progname;
 
 /* Global options. */
 struct opts {
+    int quiet;
     int txt;
 };
-int quiet = 0;
 int firstmatch = 0;
 
 /*-- PROTOTYPES -------------------------------------------------------------*/
@@ -264,15 +264,15 @@ int full_rblcheck(char *addr, struct opts *opt)
 
     for (ptr = rblsites; ptr != NULL; ptr = ptr->next) {
 	response = rblcheck(addr, ptr->site, opt->txt);
-	if (!quiet || response)
+	if (!opt->quiet || response)
 	    printf("%s %s%s%s%s%s%s", addr,
-		   (!quiet && !response ? "not " : ""),
-		   (!quiet ? "listed by " : ""),
-		   (!quiet ? ptr->site : ""),
-		   (opt->txt && response && strlen(response) && !quiet ?
+		   (!opt->quiet && !response ? "not " : ""),
+		   (!opt->quiet ? "listed by " : ""),
+		   (!opt->quiet ? ptr->site : ""),
+		   (opt->txt && response && strlen(response) && !opt->quiet ?
 		    ": " : ""),
 		   (opt->txt && response ? response : ""),
-		   (quiet && (!opt->txt || (response &&
+		   (opt->quiet && (!opt->txt || (response &&
 				       !strlen(response))) ? "" : "\n"));
 	if (response) {
 	    count++;
@@ -307,7 +307,7 @@ int main(int argc, char *argv[])
 	switch (a) {
 	case 'q':
 	    /* Quiet mode. */
-	    quiet = 1;
+	    opt->quiet = 1;
 	    break;
 	case 't':
 	    /* Display TXT record. */
