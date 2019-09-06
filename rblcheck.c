@@ -53,8 +53,10 @@ struct rbl *rblsites = NULL;
 const char *progname;
 
 /* Global options. */
+struct opts {
+    int txt;
+};
 int quiet = 0;
-int txt = 0;
 int firstmatch = 0;
 
 /*-- PROTOTYPES -------------------------------------------------------------*/
@@ -63,7 +65,7 @@ void version(void);
 void usage(void);
 struct rbl *togglesite(const char *, struct rbl *);
 char *rblcheck(const char *, char *, int);
-int full_rblcheck(char *);
+int full_rblcheck(char *, struct opts *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
 
@@ -254,23 +256,23 @@ char *rblcheck(const char *addr, char *rbldomain, int txt)
 /* full_rblcheck
  * Takes an IP address, and feeds it to rblcheck() for each defined
  * RBL listing, handling output of results if necessary. */
-int full_rblcheck(char *addr)
+int full_rblcheck(char *addr, struct opts *opt)
 {
     int count = 0;
     char *response;
     struct rbl *ptr;
 
     for (ptr = rblsites; ptr != NULL; ptr = ptr->next) {
-	response = rblcheck(addr, ptr->site, txt);
+	response = rblcheck(addr, ptr->site, opt->txt);
 	if (!quiet || response)
 	    printf("%s %s%s%s%s%s%s", addr,
 		   (!quiet && !response ? "not " : ""),
 		   (!quiet ? "listed by " : ""),
 		   (!quiet ? ptr->site : ""),
-		   (txt && response && strlen(response) && !quiet ?
+		   (opt->txt && response && strlen(response) && !quiet ?
 		    ": " : ""),
-		   (txt && response ? response : ""),
-		   (quiet && (!txt || (response &&
+		   (opt->txt && response ? response : ""),
+		   (quiet && (!opt->txt || (response &&
 				       !strlen(response))) ? "" : "\n"));
 	if (response) {
 	    count++;
@@ -287,9 +289,12 @@ int full_rblcheck(char *addr)
 int main(int argc, char *argv[])
 {
     int a;
+    struct opts *opt;
     struct rbl *ptr;
     int rblfiltered = 0;
     char inbuf[RESULT_SIZE];
+
+    opt = NOFAIL(calloc(1, sizeof(struct opts)));
 
 /* Hack to handle the easy addition of sites at compile time. */
 #define SITE(x) rblsites = togglesite( (x), rblsites );
@@ -306,7 +311,7 @@ int main(int argc, char *argv[])
 	    break;
 	case 't':
 	    /* Display TXT record. */
-	    txt = 1;
+	    opt->txt = 1;
 	    break;
 	case 'm':
 	    /* Stop after first successful match. */
@@ -363,11 +368,11 @@ int main(int argc, char *argv[])
 	if (argv[optind][0] == '-' && argv[optind][1] == '\0')
 	    while (fgets(inbuf, RESULT_SIZE - 1, stdin) != NULL) {
 		inbuf[strlen(inbuf) - 1] = '\0';
-		rblfiltered += full_rblcheck(inbuf);
+		rblfiltered += full_rblcheck(inbuf, opt);
 		if (firstmatch && rblfiltered)
 		    return rblfiltered;
 	} else
-	    rblfiltered += full_rblcheck(argv[optind]);
+	    rblfiltered += full_rblcheck(argv[optind], opt);
 	if (firstmatch && rblfiltered)
 	    return rblfiltered;
 	optind++;
