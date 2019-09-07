@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
@@ -154,6 +155,69 @@ struct rbl *togglesite(const char *sitename, struct rbl *sites)
 char *rblcheck(const char *addr, char *rbldomain, int txt)
 {
     char *domain;
+
+#ifdef HAVE_GETADDRINFO
+    struct addrinfo *res = NULL;
+    struct addrinfo hints;
+    int rc;
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_flags = AI_NUMERICHOST | AI_NUMERICSERV;
+
+    rc = getaddrinfo(addr, NULL, &hints, &res);
+    if (rc == EAI_NONAME || res == NULL) {
+	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
+	exit(-1);
+    }
+    if (rc < 0) {
+	fprintf(stderr, "%s: warning: getaddrinfo(%s): %s\n",
+		progname, addr, gai_strerror(rc));
+	exit(-1);
+    }
+
+    /* 32 characters and 32 dots in a reversed v6 address, plus 1 for null */
+    domain = NOFAIL(malloc(32 + 32 + 1 + strlen(rbldomain)));
+
+    if (res->ai_family == AF_INET) {
+	struct sockaddr_in *saddr = (struct sockaddr_in *) res->ai_addr;
+	unsigned char *a = (unsigned char *) &(saddr->sin_addr);
+
+	sprintf(domain, "%d.%d.%d.%d.%s",
+		*(a + 3), *(a + 2), *(a + 1), *a, rbldomain);
+    } else if (res->ai_family == AF_INET6) {
+	struct sockaddr_in6 *saddr = (struct sockaddr_in6 *) res->ai_addr;
+	unsigned char *a = (unsigned char *) &(saddr->sin6_addr);
+
+	sprintf(domain,
+		"%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x."
+		"%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%s",
+		*(a + 15) & 0xF, *(a + 15) >> 4,
+		*(a + 14) & 0xF, *(a + 14) >> 4,
+		*(a + 13) & 0xF, *(a + 13) >> 4,
+		*(a + 12) & 0xF, *(a + 12) >> 4,
+		*(a + 11) & 0xF, *(a + 11) >> 4,
+		*(a + 10) & 0xF, *(a + 10) >> 4,
+		*(a +  9) & 0xF, *(a +  9) >> 4,
+		*(a +  8) & 0xF, *(a +  8) >> 4,
+		*(a +  7) & 0xF, *(a +  7) >> 4,
+		*(a +  6) & 0xF, *(a +  6) >> 4,
+		*(a +  5) & 0xF, *(a +  5) >> 4,
+		*(a +  4) & 0xF, *(a +  4) >> 4,
+		*(a +  3) & 0xF, *(a +  3) >> 4,
+		*(a +  2) & 0xF, *(a +  2) >> 4,
+		*(a +  1) & 0xF, *(a +  1) >> 4,
+		*(a +  0) & 0xF, *(a +  0) >> 4,
+		rbldomain
+	);
+    } else {
+	fprintf(stderr, "%s: getaddrinfo(%s) returned ai_family=%d!\n",
+		progname, addr, res->ai_family);
+	exit(-1);
+    }
+
+    freeaddrinfo(res);
+#else
     int a, b, c, d;
 
     if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
@@ -168,6 +232,7 @@ char *rblcheck(const char *addr, char *rbldomain, int txt)
 
     /* Create a domain name, in reverse. */
     sprintf(domain, "%d.%d.%d.%d.%s", d, c, b, a, rbldomain);
+#endif
 
     return query_dns(domain, txt);
 }
