@@ -3,7 +3,10 @@
 
    Add new sites to this listing in the format:
 
-       SITE("site.domain.com")
+       // for IP-based DNSBLs
+       SITE("site.example.com")
+       // for domain-based DNSBLs
+       URI_SITE("site.example.com")
 
    Do not add any extra whitespace, and make sure you place quotes
    around the address. Use C comments in this file if you want to

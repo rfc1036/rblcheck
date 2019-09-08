@@ -55,6 +55,7 @@ const char *progname;
 /* Global options. */
 struct opts {
     struct rbl *rblsites;
+    struct rbl *uribls;
     int firstmatch;
     int quiet;
     int txt;
@@ -378,8 +379,12 @@ int full_rblcheck(char *addr, struct opts *opt)
     struct rbl *ptr;
 
     domain = is_domain(addr);
+    if (domain)
+	ptr = opt->uribls;
+    else
+	ptr = opt->rblsites;
 
-    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next) {
+    for (; ptr != NULL; ptr = ptr->next) {
 	if (domain)
 	    response = rblcheck_domain(addr, ptr->site, opt->txt);
 	else
@@ -418,8 +423,10 @@ int main(int argc, char *argv[])
 
 /* Hack to handle the easy addition of sites at compile time. */
 #define SITE(x) opt->rblsites = togglesite( (x), opt->rblsites );
+#define URI_SITE(x) opt->uribls = togglesite( (x), opt->uribls );
 #include "sites.h"
 #undef SITE
+#undef URI_SITE
 
     progname = argv[0];
 
@@ -441,10 +448,13 @@ int main(int argc, char *argv[])
 	    /* Display supported RBL systems. */
 	    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
+	    for (ptr = opt->uribls; ptr != NULL; ptr = ptr->next)
+		printf("%s\n", ptr->site);
 	    exit(0);
 	case 's':
 	    /* Toggle a particular zone. */
 	    opt->rblsites = togglesite(optarg, opt->rblsites);
+	    opt->uribls = togglesite(optarg, opt->uribls);
 	    break;
 	case 'c':
 	    /* Clear the rbl zones. */
@@ -454,6 +464,13 @@ int main(int argc, char *argv[])
 		free(ptr->site);
 		free(ptr);
 		ptr = opt->rblsites;
+	    }
+	    ptr = opt->uribls;
+	    while (ptr != NULL) {
+		opt->uribls = ptr->next;
+		free(ptr->site);
+		free(ptr);
+		ptr = opt->uribls;
 	    }
 	    break;
 	case '?':
