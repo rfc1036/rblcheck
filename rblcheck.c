@@ -65,8 +65,10 @@ void *do_nofail(void *, const char *, const int);
 void version(void);
 void usage(void);
 struct rbl *togglesite(const char *, struct rbl *);
-char *rblcheck(const char *, char *, int);
+char *rblcheck_ip(const char *, char *, int);
+char *rblcheck_domain(const char *, char *, int);
 char *query_dns(const char *, const int);
+int is_domain(const char *);
 int full_rblcheck(char *, struct opts *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
@@ -147,12 +149,12 @@ struct rbl *togglesite(const char *sitename, struct rbl *sites)
     return sites;
 }
 
-/* rblcheck()
+/* rblcheck_ip()
  * Checks the specified dotted-quad address against the provided RBL
  * domain. If "txt" is non-zero, we perform a TXT record lookup. We
  * return the text returned from a TXT match, or an empty string, on
  * a successful match, or NULL on an unsuccessful match. */
-char *rblcheck(const char *addr, char *rbldomain, int txt)
+char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
 {
     char *domain;
 
@@ -325,17 +327,63 @@ char *query_dns(const char *domain, const int txt)
     return result;
 }
 
+char *rblcheck_domain(const char *addr, char *rbldomain, int txt)
+{
+    char *domain;
+
+    domain = NOFAIL(malloc(strlen(addr) + 1 + strlen(rbldomain) + 1));
+    strcpy(domain, addr);
+    strcat(domain, ".");
+    strcat(domain, rbldomain);
+
+    return query_dns(domain, txt);
+}
+
+int is_domain(const char *s)
+{
+    const char *p;
+
+    /* not a valid domain, but hopefully a valid IPv6 address */
+    if (strrchr(s, ':'))
+	return 0;
+
+    /* does not contain a dot nor a colon, so it is not a v4 or v6 IP */
+    p = strrchr(s, '.');
+    if (!p)
+	return 1;
+
+    /* check the character after the dot */
+    p++;
+
+    /* a trailing dot is invalid, so have getaddrinfo() fail on it */
+    if (*p == '\0')
+	return 0;
+
+    /* contains an alphabetic character */
+    for (p = s; *p != '\0'; p++)
+	if ((*p >= 'a' && *p <= 'z') || (*p >= 'a' && *p <= 'z'))
+	    return 1;
+
+    return 0;
+}
+
 /* full_rblcheck
  * Takes an IP address, and feeds it to rblcheck() for each defined
  * RBL listing, handling output of results if necessary. */
 int full_rblcheck(char *addr, struct opts *opt)
 {
     int count = 0;
+    int domain;
     char *response;
     struct rbl *ptr;
 
+    domain = is_domain(addr);
+
     for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next) {
-	response = rblcheck(addr, ptr->site, opt->txt);
+	if (domain)
+	    response = rblcheck_domain(addr, ptr->site, opt->txt);
+	else
+	    response = rblcheck_ip(addr, ptr->site, opt->txt);
 	if (!opt->quiet || response)
 	    printf("%s %s%s%s%s%s%s", addr,
 		   (!opt->quiet && !response ? "not " : ""),
