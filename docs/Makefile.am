@@ -1,7 +1,7 @@
 docdir = $(datadir)/docs
 
 EXTRA_DIST = rblcheck.sgml
-DISTCLEANFILES = rblcheck.ps rblcheck.rtf html/*.html
+DISTCLEANFILES = rblcheck.ps rblcheck.rtf rblcheck.tex html/*.html
 MAINTAINERCLEANFILES = Makefile.in
 
 html/index.html: rblcheck.sgml
