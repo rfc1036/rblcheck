@@ -1,5 +1,5 @@
 /*
-   rblcheck RBL Systems
+   rblcheck DNSBL systems
 
    Add new sites to this listing in the format:
 
@@ -19,16 +19,12 @@
    but you should not rely blindly on these values being correct, nor
    should you rely on someone else's judgement about the "goodness" of
    a particular list; test them, and see if their policies suit your
-   tastes. RBL-style systems tend to move around a bit, so you should
+   tastes. DNSBL-style systems tend to move around a bit, so you should
    check the service websites regularly for updates.
 
    In other words, if you use one of these, and the world ends, don't
    blame me. You're using them at your own risk. If they break, you get
    to keep both pieces.
-
-   For more up-to-date information on current RBL-style listings, see:
-
-       http://www.iki.fi/era/rbl/rbl.html
 */
 
 /* dev.null.dk
