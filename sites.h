@@ -27,37 +27,23 @@
    to keep both pieces.
 */
 
-/* dev.null.dk
-   http://dev.null.dk/ (Maybe?) */
-/* SITE("dev.null.dk") */
+/* https://www.spamhaus.org/sbl/ */
+SITE("sbl.spamhaus.org");
+/* https://www.spamhaus.org/xbl/ */
+SITE("xbl.spamhaus.org");
+/* https://www.spamhaus.org/pbl/ */
+SITE("pbl.spamhaus.org");
+/* https://www.spamcop.net/bl.shtml */
+SITE("bl.spamcop.net");
+/* https://psbl.org/ */
+SITE("psbl.surriel.com");
+/* http://www.sorbs.net/general/using.shtml */
+SITE("dul.dnsbl.sorbs.net");
 
-/* MAPS RBL: Mail Abuse Protection System Realtime Blackhole List
-   http://mail-abuse.org/rbl/ */
-/* SITE("blackholes.mail-abuse.org") */
+/* https://www.spamhaus.org/dbl/ */
+URI_SITE("dbl.spamhaus.org");
+/* http://www.surbl.org/lists */
+URI_SITE("multi.surbl.org");
+/* http://uribl.com/about.shtml */
+URI_SITE("multi.uribl.com");
 
-/* MAPS RSS: Mail Abuse Protection System Relay Spam Stopper
-   http://mail-abuse.org/rss/ */
-/* SITE("relays.mail-abuse.org") */
-
-/* MAPS DUL: Mail Abuse Protection System Dial-up User List
-   http://mail-abuse.org/dul/ */
-/* SITE("dialups.mail-abuse.org") */
-
-/* MBL: Mike's Black List
-   http://groups.google.com/groups?ic=1&th=26aaeffd51692527,1
-   Please note: This URL seems to change frequently. See era's list above
-   for more current information. */
-/* SITE("3y.spam.mrs.kithrup.com") */
-
-/* ORBL: Open Relay Black List
-   http://www.orbl.org/ */
-/* SITE("or.orbl.org") */
-
-/* ORBZ: Open Relay Block Zone
-   http://www.orbz.gst-group.co.uk/orbs/ */
-/* SITE("orbz.gst-group.co.uk") */
-/* SITE("manual.orbz.gst-group.co.uk") */
-
-/* ORDB: Open Relay DataBase
-   http://www.ordb.org/ */
-/* SITE("relays.ordb.org") */
