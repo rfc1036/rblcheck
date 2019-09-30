@@ -5,8 +5,8 @@ Maintainer: Marco d'Itri <md@linux.it>
 Standards-Version: 4.4.0.1
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 12), docbook-utils, lynx
-Vcs-Git: https://anonscm.debian.org/git/users/md/rblcheck.git
-Vcs-Browser: https://anonscm.debian.org/cgit/users/md/rblcheck.git
+Vcs-Git: https://github.com/rfc1036/rblcheck.git
+Vcs-Browser: https://github.com/rfc1036/rblcheck
 
 Package: rblcheck
 Architecture: any
