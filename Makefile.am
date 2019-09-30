@@ -37,7 +37,7 @@ EXTRA_DIST = \
 
 SUBDIRS = docs .
 
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.in stamp-h.in \
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in \
 	$(AUX_DIST)
 
 DISTCLEANFILES = config/rblcheck.spec config/pkginfo

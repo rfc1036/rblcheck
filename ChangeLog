@@ -1,3 +1,18 @@
+Changes since 20190930:
+
+Marco d'Itri <md@linux.it> forked the original unmaintained code.
+
+Cleaned up the source code by updating obsolete language constructs
+and removing compatibility code for obsolete systemd.
+
+The documentation still needs to be updated to reflect most changes.
+
+Replaced "RBL" with "DNSBL" in user-visible messages.
+
+Added support for IPv6 DNSBLs.
+
+Added support for domain-based DNSBLs (URIBLs).
+
 Changes since 1.4:
 
 - Converted to automake/autoconf for configuration, which should make

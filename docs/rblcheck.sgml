@@ -128,11 +128,6 @@ Almost any relatively POSIX platform with a resolver library.
 </ItemizedList>
 </Para>
 
-<Para>
-Please send success reports (and what, if anything, you had to change to
-make rblcheck build correctly) for your platform of choice to
-<EMail>rblcheck-users@lists.sourceforge.net</EMail>.
-</Para>
 </Section>
 
 <Section id="building_compiling">
@@ -299,9 +294,7 @@ The program has several command line options:
 <Row>
 <Entry><Option>-q</Option></Entry>
 <Entry><Para>
-Be quiet about whether the IP address was matched or not. Handy for
-automatic processing scripts which just check the return code of 
-rblcheck.
+Display only listed addresses, if none is listed then there is no output.
 </Para></Entry>
 </Row>
 <Row>
@@ -787,9 +780,6 @@ caller via a filter (after the display of PTR addresses is added)?
 </Para></ListItem>
 </ItemizedList>
 
-<Para>
-Send ideas to <EMail>rblcheck-users@lists.sourceforge.net</EMail>.
-</Para>
 </Section>
 
 <Section id="future_nottodo">
@@ -925,17 +915,9 @@ messages, from various mailing lists and private messages, on a Linux
 <Title>Reporting Problems</Title>
 
 <Para>
-If you're in need of assistance, a (very low volume) mailing list for
-rblcheck users has been set up; to subscribe, simply send an email to
-<EMail>rblcheck-users-subscribe@lists.sourceforge.net</EMail>, answer the
-confirmation email, and you'll be able to post your questions.
-(<ULink url="http://www.geocrawler.com/lists/3/SourceForge/1600/0/">Archives</ULink>)
-</Para>
-
-<Para>
 All software has bugs, and rblcheck has a place for you to report them if
 you believe you've found one.
-(<ULink url="http://sourceforge.net/bugs/?group_id=2081">Bug tracker</ULink>)
+(<ULink url="https://github.com/rfc1036/rblcheck/issues">Bug tracker</ULink>)
 </Para>
 
 <Para>
