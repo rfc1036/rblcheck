@@ -1,3 +1,12 @@
+rblcheck (20190930-1) unstable; urgency=medium
+
+  * New upstream maintainer and new upstream release.
+    Now The package supports:
+    + IPv6 dnsbls.
+    + domain-based DNSBLs (URIBLs).
+
+ -- Marco d'Itri <md@linux.it>  Mon, 30 Sep 2019 15:47:05 +0200
+
 rblcheck (20020316-10) unstable; urgency=medium
 
   [ Helmut Grohne ]
