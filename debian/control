@@ -7,6 +7,7 @@ Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 12), docbook-utils, lynx
 Vcs-Git: https://github.com/rfc1036/rblcheck.git
 Vcs-Browser: https://github.com/rfc1036/rblcheck
+Homepage: https://github.com/logic/rblcheck
 
 Package: rblcheck
 Architecture: any
@@ -18,4 +19,3 @@ Description: Tool to query DNSBL servers
  "2.0.0.127.domain.name.com", where 2.0.0.127 is the abusive IP address
  in reverse (for example, 2.0.0.127 would be the IP address 127.0.0.2),
  and "domain.name.com" is the base domain name of the filtering service.
-Homepage: https://github.com/logic/rblcheck
