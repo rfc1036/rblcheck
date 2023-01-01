@@ -1,3 +1,10 @@
+rblcheck (20190930-2) unstable; urgency=medium
+
+  * Enabled hardening.
+  * Generally updated the packaging.
+
+ -- Marco d'Itri <md@linux.it>  Sun, 01 Jan 2023 15:17:06 +0100
+
 rblcheck (20190930-1) unstable; urgency=medium
 
   * New upstream maintainer and new upstream release.
