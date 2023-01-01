@@ -7,7 +7,6 @@ Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 12), docbook-utils, lynx
 Vcs-Git: https://github.com/rfc1036/rblcheck.git
 Vcs-Browser: https://github.com/rfc1036/rblcheck
-Homepage: https://github.com/logic/rblcheck
 
 Package: rblcheck
 Architecture: any
