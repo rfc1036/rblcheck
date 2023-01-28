@@ -1,3 +1,10 @@
+rblcheck (20190930-3) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Fix cross building. (Closes: #1029086)
+
+ -- Marco d'Itri <md@linux.it>  Sat, 28 Jan 2023 23:34:03 +0100
+
 rblcheck (20190930-2) unstable; urgency=medium
 
   * Enabled hardening.
