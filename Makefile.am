@@ -24,15 +24,6 @@ EXTRA_DIST = \
 	config/rblcheck.spec		\
 	config/rblcheck.spec.in		\
 	config/pkginfo.in		\
-	utils/README			\
-	utils/test_origip.sh		\
-	utils/test_rblcheck.sh		\
-	utils/dns/Makefile		\
-	utils/dns/dump.c		\
-	utils/qmail/Makefile		\
-	utils/qmail/origip.awk		\
-	utils/qmail/origip.c		\
-	utils/sendmail/origip.pl	\
 	$(TESTS)
 
 SUBDIRS = docs .
@@ -42,7 +33,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in \
 
 DISTCLEANFILES = config/rblcheck.spec config/pkginfo
 
-CLEANFILES = config/Prototype rbl
+CLEANFILES = rbl
 
 ACLOCAL = aclocal -I $(auxdir)
 
