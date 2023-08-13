@@ -22,6 +22,7 @@
 */
 
 #include "config.h"
+#include "utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +64,6 @@ struct opts {
 };
 
 /*-- PROTOTYPES -------------------------------------------------------------*/
-void *do_nofail(void *, const char *, const int);
 void version(void);
 void usage(void);
 struct rbl *togglesite(const char *, struct rbl *);
@@ -74,17 +74,6 @@ int is_domain(const char *);
 int full_rblcheck(char *, struct opts *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
-
-void *do_nofail(void *ptr, const char *file, const int line)
-{
-    if (ptr)
-	return ptr;
-
-    fprintf(stderr, "Memory allocation failure at %s:%d.", file, line);
-    exit(-1);
-}
-
-#define NOFAIL(ptr) do_nofail((ptr), __FILE__, __LINE__)
 
 /* version()
  * Display the version of this program back to the user. */

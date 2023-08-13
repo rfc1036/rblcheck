@@ -6,7 +6,7 @@ AUX_DIST = $(auxdir)/install-sh $(auxdir)/missing $(auxdir)/mkinstalldirs
 noinst_HEADERS = sites.h
 
 bin_PROGRAMS = rblcheck
-rblcheck_SOURCES = rblcheck.c
+rblcheck_SOURCES = rblcheck.c utils.c
 
 XFAIL_TESTS =
 TESTS = tests/clearlist tests/addlisting tests/removelisting $(XFAIL_TESTS)
