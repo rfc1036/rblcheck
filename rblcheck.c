@@ -70,7 +70,7 @@ struct rbl *togglesite(const char *, struct rbl *);
 char *rblcheck_ip(const char *, char *, int);
 char *rblcheck_domain(const char *, char *, int);
 char *query_dns(const char *, const int);
-int is_domain(const char *);
+int query_type(const char *);
 int full_rblcheck(char *, struct opts *);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
@@ -330,7 +330,7 @@ char *rblcheck_domain(const char *addr, char *rbldomain, int txt)
     return query_dns(domain, txt);
 }
 
-int is_domain(const char *s)
+int query_type(const char *s)
 {
     const char *p;
 
@@ -364,18 +364,18 @@ int is_domain(const char *s)
 int full_rblcheck(char *addr, struct opts *opt)
 {
     int count = 0;
-    int domain;
+    int type;
     char *response;
     struct rbl *ptr;
 
-    domain = is_domain(addr);
-    if (domain)
+    type = query_type(addr);
+    if (type)
 	ptr = opt->uribls;
     else
 	ptr = opt->rblsites;
 
     for (; ptr != NULL; ptr = ptr->next) {
-	if (domain)
+	if (type)
 	    response = rblcheck_domain(addr, ptr->site, opt->txt);
 	else
 	    response = rblcheck_ip(addr, ptr->site, opt->txt);
