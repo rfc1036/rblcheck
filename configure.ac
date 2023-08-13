@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(rblcheck, 20190930, , rblcheck, https://github.com/rfc1036/rblcheck)
+AC_INIT(rblcheck, 20230811, , rblcheck, https://github.com/rfc1036/rblcheck)
 AC_CONFIG_SRCDIR(rblcheck.c)
 AC_CONFIG_AUX_DIR(build-aux)
 AM_INIT_AUTOMAKE(foreign -Wall)

@@ -4,7 +4,7 @@
 ** Copyright (C) 1997, 1998, 1999, 2000, 2001,
 ** Edward S. Marshall <esm@logic.net>
 **
-** Copyright (C) 2019 Marco d'Itri <md@linux.it>.
+** Copyright (C) 2019-2023 Marco d'Itri <md@linux.it>.
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ void version(void)
 {
     fprintf(stderr,
 	    "%s %s\nCopyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n"
-	    "Copyright (C) 2019 Marco d'Itri\n",
+	    "Copyright (C) 2019-2023 Marco d'Itri\n",
 	    PACKAGE, VERSION);
 }
 
