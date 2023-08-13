@@ -487,7 +487,7 @@ int main(int argc, char *argv[])
 
     /* Did they tell us to check anything? */
     if (optind == argc) {
-	fprintf(stderr, "%s: no IP address(es) specified\n", progname);
+	fprintf(stderr, "%s: no address(es) specified\n", progname);
 	usage();
 	exit(-1);
     }
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
     /* Do we have any listings to search? */
     if (!opt->rblsites) {
 	fprintf(stderr,
-		"%s: no rbl listing(s) specified (need '-s <zone>'?)\n",
+		"%s: no DNSBL domains(s) specified (need '-s <domain>'?)\n",
 		progname);
 	exit(-1);
     }
