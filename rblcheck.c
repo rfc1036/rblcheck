@@ -43,6 +43,14 @@
 
 #define RESULT_SIZE 4096	/* What is the longest result text we support? */
 
+/* The values returned by query_type(). */
+enum query_types {
+    RBLCHECK_IP,
+    RBLCHECK_DOMAIN,
+    RBLCHECK_EMAIL,
+    RBLCHECK_FILE,
+};
+
 /*-- GLOBAL VARIABLES -------------------------------------------------------*/
 
 /* Simple linked list to hold the sites we support. See sites.h. */
@@ -336,26 +344,26 @@ int query_type(const char *s)
 
     /* not a valid domain, but hopefully a valid IPv6 address */
     if (strrchr(s, ':'))
-	return 0;
+	return RBLCHECK_IP;
 
     /* does not contain a dot nor a colon, so it is not a v4 or v6 IP */
     p = strrchr(s, '.');
     if (!p)
-	return 1;
+	return RBLCHECK_DOMAIN;
 
     /* check the character after the dot */
     p++;
 
     /* a trailing dot is invalid, so have getaddrinfo() fail on it */
     if (*p == '\0')
-	return 0;
+	return RBLCHECK_IP;
 
     /* contains an alphabetic character */
     for (p = s; *p != '\0'; p++)
 	if ((*p >= 'a' && *p <= 'z') || (*p >= 'a' && *p <= 'z'))
-	    return 1;
+	    return RBLCHECK_DOMAIN;
 
-    return 0;
+    return RBLCHECK_IP;
 }
 
 /* full_rblcheck
@@ -369,13 +377,13 @@ int full_rblcheck(char *addr, struct opts *opt)
     struct rbl *ptr;
 
     type = query_type(addr);
-    if (type)
+    if (type == RBLCHECK_DOMAIN)
 	ptr = opt->uribls;
     else
 	ptr = opt->rblsites;
 
     for (; ptr != NULL; ptr = ptr->next) {
-	if (type)
+	if (type == RBLCHECK_DOMAIN)
 	    response = rblcheck_domain(addr, ptr->site, opt->txt);
 	else
 	    response = rblcheck_ip(addr, ptr->site, opt->txt);
