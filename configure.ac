@@ -33,6 +33,5 @@ AC_CONFIG_FILES(
 	Makefile
 	docs/Makefile
 	config/rblcheck.spec
-	config/pkginfo
 )
 AC_OUTPUT

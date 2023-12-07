@@ -20,7 +20,6 @@ EXTRA_DIST = \
 	config/mkinstalldirs		\
 	config/rblcheck.spec		\
 	config/rblcheck.spec.in		\
-	config/pkginfo.in		\
 	$(TESTS)
 
 SUBDIRS = docs .
@@ -28,19 +27,7 @@ SUBDIRS = docs .
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in \
 	$(AUX_DIST)
 
-DISTCLEANFILES = config/rblcheck.spec config/pkginfo
+DISTCLEANFILES = config/rblcheck.spec
 
 ACLOCAL = aclocal -I $(auxdir)
-
-# Build a Solaris package.
-solarispkg: $(bin_PROGRAMS)
-	test -x /usr/bin/pkgproto
-	test -x /usr/bin/pkgmk
-	$(MAKE) DESTDIR=`pwd`/$(distdir) install
-	echo 'i pkginfo' > config/Prototype
-	pkgproto $(distdir)/usr \
-		| sed -e "s, $(distdir), ," >> config/Prototype
-	pkgmk -d config -f config/Prototype -r $(distdir)
-	pkgtrans config ../$(distdir).pkg rblcheck
-	rm -rf $(distdir) config/rblcheck
 
