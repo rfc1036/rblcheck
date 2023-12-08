@@ -18,16 +18,12 @@ EXTRA_DIST = \
 	config/install-sh		\
 	config/missing			\
 	config/mkinstalldirs		\
-	config/rblcheck.spec		\
-	config/rblcheck.spec.in		\
 	$(TESTS)
 
 SUBDIRS = docs .
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in \
 	$(AUX_DIST)
-
-DISTCLEANFILES = config/rblcheck.spec
 
 ACLOCAL = aclocal -I $(auxdir)
 

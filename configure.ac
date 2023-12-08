@@ -32,6 +32,5 @@ dnl All done.
 AC_CONFIG_FILES(
 	Makefile
 	docs/Makefile
-	config/rblcheck.spec
 )
 AC_OUTPUT
