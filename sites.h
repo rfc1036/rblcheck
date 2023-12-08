@@ -40,10 +40,18 @@ SITE("psbl.surriel.com");
 /* http://www.sorbs.net/general/using.shtml */
 SITE("dul.dnsbl.sorbs.net");
 
+#ifdef SPAMHAUS_DQS_KEY
+/* https://www.spamhaus.org/dbl/ */
+URI_SITE(SPAMHAUS_DQS_KEY ".dbl.dq.spamhaus.net.");
+#else
 /* https://www.spamhaus.org/dbl/ */
 URI_SITE("dbl.spamhaus.org");
+#endif
 /* http://www.surbl.org/lists */
 URI_SITE("multi.surbl.org");
 /* http://uribl.com/about.shtml */
 URI_SITE("multi.uribl.com");
+
+/* http://www.msbl.org/ebl.html */
+EMAIL_HASH_SITE("ebl.msbl.org");
 

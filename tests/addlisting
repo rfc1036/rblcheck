@@ -2,7 +2,7 @@
 
 # Clear the list, add an entry, and display it.
 
-if test x"`./rblcheck -c -s testlisting -l 2>&1`" != x"testlisting"
+if test "`./rblcheck -c -s testlisting -l 2>&1 | grep -v '^#' | uniq`" != "testlisting"
 then
 	exit 1
 fi
