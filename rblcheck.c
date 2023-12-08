@@ -328,14 +328,16 @@ char *query_dns(const char *domain, const int txt)
 
 char *rblcheck_domain(const char *addr, char *rbldomain, int txt)
 {
-    char *domain;
+    char *domain, *result;
 
     domain = NOFAIL(malloc(strlen(addr) + 1 + strlen(rbldomain) + 1));
     strcpy(domain, addr);
     strcat(domain, ".");
     strcat(domain, rbldomain);
 
-    return query_dns(domain, txt);
+    result = query_dns(domain, txt);
+    free(domain);
+    return result;
 }
 
 int query_type(const char *s)
