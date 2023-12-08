@@ -8,6 +8,12 @@ noinst_HEADERS = sites.h
 bin_PROGRAMS = rblcheck
 rblcheck_SOURCES = rblcheck.c utils.c
 
+if WITH_HASHED_DNSBLS
+rblcheck_SOURCES += base32.c
+rblcheck_CPPFLAGS = $(CRYPTO_CFLAGS)
+rblcheck_LDADD = $(CRYPTO_LIBS)
+endif
+
 XFAIL_TESTS =
 TESTS = tests/clearlist tests/addlisting tests/removelisting $(XFAIL_TESTS)
 

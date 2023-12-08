@@ -134,7 +134,7 @@ void usage(void)
     -s <service> Toggle a service to the DNSBL services list\n\
     -h, -?       Display this help message\n\
     -v           Display version information\n\
-    <address>    An IP or email address to look up;\n\
+    <address>    An IP or email address or file to look up;\n\
                  specify '@/file/name' to read a file;\n\
 		 specify '-' to read multiple elements from standard input.\n",
 	    progname);
