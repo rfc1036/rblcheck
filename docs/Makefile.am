@@ -34,12 +34,3 @@ install-data-local: html/index.html rblcheck.ps rblcheck.rtf
 	-$(INSTALL_DATA) $(srcdir)/rblcheck.ps $(DESTDIR)$(docdir)/rblcheck.ps
 	-$(INSTALL_DATA) $(srcdir)/rblcheck.rtf $(DESTDIR)$(docdir)/rblcheck.rtf
 
-uninstall-local:
-	-for file in $(srcdir)/html/*.html; do \
-		basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-		rm -f $(docdir)/html/$$basefile; \
-	done
-	-rm -f $(docdir)rblcheck.rtf
-	-rm -f $(docdir)rblcheck.ps
-	-rm -f $(docdir)rblcheck.sgml
-	-rmdir $(docdir)/html
