@@ -94,6 +94,7 @@ struct opts {
 void version(void);
 void usage(void);
 struct rbl *togglesite(const char *, struct rbl *);
+struct rbl *cleanlist(struct rbl *);
 char *rblcheck_ip(const char *, char *, int);
 char *rblcheck_domain(const char *, char *, int);
 char *rblcheck_email(const char *, char *, int);
@@ -172,6 +173,21 @@ struct rbl *togglesite(const char *sitename, struct rbl *sites)
     strcpy(ptr->site, sitename);
     ptr->next = NULL;
     return sites;
+}
+
+struct rbl *cleanlist(struct rbl *list)
+{
+    struct rbl *ptr;
+
+    ptr = list;
+    while (ptr != NULL) {
+	list = ptr->next;
+	free(ptr->site);
+	free(ptr);
+	ptr = list;
+    }
+
+    return list;
 }
 
 /* rblcheck_ip()
@@ -745,34 +761,10 @@ int main(int argc, char *argv[])
 	    break;
 	case 'c':
 	    /* Clear the rbl zones. */
-	    ptr = opt->rblsites;
-	    while (ptr != NULL) {
-		opt->rblsites = ptr->next;
-		free(ptr->site);
-		free(ptr);
-		ptr = opt->rblsites;
-	    }
-	    ptr = opt->uribls;
-	    while (ptr != NULL) {
-		opt->uribls = ptr->next;
-		free(ptr->site);
-		free(ptr);
-		ptr = opt->uribls;
-	    }
-	    ptr = opt->emailhashbls;
-	    while (ptr != NULL) {
-		opt->emailhashbls = ptr->next;
-		free(ptr->site);
-		free(ptr);
-		ptr = opt->emailhashbls;
-	    }
-	    ptr = opt->filehashbls;
-	    while (ptr != NULL) {
-		opt->filehashbls = ptr->next;
-		free(ptr->site);
-		free(ptr);
-		ptr = opt->filehashbls;
-	    }
+	    opt->rblsites = cleanlist(opt->rblsites);
+	    opt->uribls = cleanlist(opt->uribls);
+	    opt->emailhashbls = cleanlist(opt->emailhashbls);
+	    opt->filehashbls = cleanlist(opt->filehashbls);
 	    break;
 	case '?':
 	case 'h':
