@@ -209,15 +209,10 @@ char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
     hints.ai_flags = AI_NUMERICHOST | AI_NUMERICSERV;
 
     rc = getaddrinfo(addr, NULL, &hints, &res);
-    if (rc == EAI_NONAME || res == NULL) {
-	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
-	exit(-1);
-    }
-    if (rc < 0) {
-	fprintf(stderr, "%s: warning: getaddrinfo(%s): %s\n",
-		progname, addr, gai_strerror(rc));
-	exit(-1);
-    }
+    if (rc == EAI_NONAME || res == NULL)
+	err_quit("warning: invalid address '%s'", addr);
+    if (rc < 0)
+	err_quit("warning: getaddrinfo(%s): %s", addr, gai_strerror(rc));
 
     /* 32 characters and 32 dots in a reversed v6 address, plus 1 for null */
     domain = NOFAIL(malloc(32 + 32 + 1 + strlen(rbldomain)));
@@ -254,9 +249,8 @@ char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
 		rbldomain
 	);
     } else {
-	fprintf(stderr, "%s: getaddrinfo(%s) returned ai_family=%d!\n",
-		progname, addr, res->ai_family);
-	exit(-1);
+	err_quit("getaddrinfo(%s) returned ai_family=%d!",
+		addr, res->ai_family);
     }
 
     freeaddrinfo(res);
@@ -266,9 +260,7 @@ char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
     if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
 	    || a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255
 	    || d < 0 || d > 255) {
-	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
-	exit(-1);
-    }
+	err_quit("warning: invalid address '%s'", addr);
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
     domain = NOFAIL(malloc(17 + strlen(rbldomain)));
@@ -434,19 +426,14 @@ size_t read_file(const char *path, char **buf_result)
     size_t len = 0;
 
     fd = open(path, O_RDONLY);
-    if (fd < 0) {
-	fprintf(stderr, "%s: cannot open file '%s': %s\n", progname, path,
-		strerror(errno));
-	exit(-1);
-    }
+    if (fd < 0)
+	err_sys("cannot open file '%s'", path);
 
     while ((n = read(fd, buf, sizeof(buf))) > 0) {
 	if (n < 0) {
 	    if (errno == EAGAIN)
 		continue;
-	    fprintf(stderr, "%s: cannot read file '%s': %s\n", progname, path,
-		    strerror(errno));
-	    exit(-1);
+	    err_sys("cannot read file '%s'", path);
 	}
 	str = realloc(str, len + n + 1);
 	memcpy(str + len, buf, n);
@@ -604,8 +591,7 @@ char *sha_256_base32(const char *buf, size_t length)
 
 char *rblcheck_email(const char *email, char *rbldomain, int txt)
 {
-    fprintf(stderr, "Support for hashed DNSBLs is not enabled!\n");
-    exit(-1);
+    err_quit("Support for hashed DNSBLs is not enabled!");
 }
 
 char *rblcheck_file(const char *email, char *rbldomain, int txt)
@@ -793,12 +779,8 @@ int main(int argc, char *argv[])
     }
 
     /* Do we have any listings to search? */
-    if (!opt->rblsites) {
-	fprintf(stderr,
-		"%s: no DNSBL domains(s) specified (need '-s <domain>'?)\n",
-		progname);
-	exit(-1);
-    }
+    if (!opt->rblsites)
+	err_quit("no DNSBL domains(s) specified (need '-s <domain>'?)");
 
     /* Loop through the command line. */
     while (optind < argc) {
