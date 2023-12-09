@@ -743,12 +743,20 @@ int main(int argc, char *argv[])
 	    break;
 	case 'l':
 	    /* Display supported RBL systems. */
+	    if (opt->rblsites)
+		puts("# IP-based DNSBLs:");
 	    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
+	    if (opt->uribls)
+		puts("# Domain-based DNSBLs:");
 	    for (ptr = opt->uribls; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
+	    if (opt->emailhashbls)
+		puts("# Email-based DNSBLs:");
 	    for (ptr = opt->emailhashbls; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
+	    if (opt->filehashbls)
+		puts("# File-based DNSBLs:");
 	    for (ptr = opt->filehashbls; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
 	    exit(0);
