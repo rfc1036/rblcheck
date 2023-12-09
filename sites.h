@@ -27,12 +27,19 @@
    to keep both pieces.
 */
 
+#ifdef SPAMHAUS_DQS_KEY
+/* https://www.spamhaus.org/zen/ */
+/* Spamhaus Zen is only available to Spamhaus Data Query Service customers
+ * and replaces SBL+XBL+PBL. */
+URI_SITE(SPAMHAUS_DQS_KEY ".zen.dq.spamhaus.net");
+#else
 /* https://www.spamhaus.org/sbl/ */
 SITE("sbl.spamhaus.org");
 /* https://www.spamhaus.org/xbl/ */
 SITE("xbl.spamhaus.org");
 /* https://www.spamhaus.org/pbl/ */
 SITE("pbl.spamhaus.org");
+#endif
 /* https://www.spamcop.net/bl.shtml */
 SITE("bl.spamcop.net");
 /* https://psbl.org/ */
@@ -42,7 +49,7 @@ SITE("dul.dnsbl.sorbs.net");
 
 #ifdef SPAMHAUS_DQS_KEY
 /* https://www.spamhaus.org/dbl/ */
-URI_SITE(SPAMHAUS_DQS_KEY ".dbl.dq.spamhaus.net.");
+URI_SITE(SPAMHAUS_DQS_KEY ".dbl.dq.spamhaus.net");
 #else
 /* https://www.spamhaus.org/dbl/ */
 URI_SITE("dbl.spamhaus.org");
@@ -54,4 +61,11 @@ URI_SITE("multi.uribl.com");
 
 /* http://www.msbl.org/ebl.html */
 EMAIL_HASH_SITE("ebl.msbl.org");
+/* https://www.spamhaus.org/hbl/ */
+/* Spamhaus HBL is disabled by default because it is only available to
+ * Spamhaus Data Query Service customers. */
+#ifdef SPAMHAUS_DQS_KEY
+FILE_HASH_SITE("_file." SPAMHAUS_DQS_KEY ".hbl.dq.spamhaus.net");
+EMAIL_HASH_SITE("_email." SPAMHAUS_DQS_KEY ".hbl.dq.spamhaus.net");
+#endif
 

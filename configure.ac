@@ -14,6 +14,10 @@ PKG_PROG_PKG_CONFIG
 dnl Checks for header files.
 AC_CHECK_HEADERS(getopt.h)
 
+AC_ARG_WITH([spamhaus-dqs-key],
+	AS_HELP_STRING([--with-spamhaus-dqs-key=KEY], [provide a Spamhaus DQS key]),
+	AC_DEFINE_UNQUOTED([SPAMHAUS_DQS_KEY], ["$with_spamhaus_dqs_key"], [The Spamhaus DQS key]))
+
 dnl Figure out where to get res_query from. First, see if it's in the
 dnl C library (Linux, and probably a few others). Then, check libbind
 dnl (generally, if you've installed bind 8, you're going to want to use
