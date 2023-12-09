@@ -31,7 +31,13 @@ dist-hook: html/index.html rblcheck.ps rblcheck.rtf rblcheck.txt
 distclean-local:
 	-rmdir html
 
-install-data-local: html/index.html rblcheck.ps rblcheck.rtf rblcheck.txt
+# Only build the .txt documentation until somebody can update this makefile
+# to modern standards.
+install-data-local: rblcheck.txt
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) $(srcdir)/rblcheck.txt $(DESTDIR)$(docdir)/rblcheck.txt
+
+DISABLED_install-data-local: html/index.html rblcheck.ps rblcheck.rtf rblcheck.txt
 	$(mkinstalldirs) $(DESTDIR)$(docdir)/html
 	for file in $(srcdir)/html/*.html; do \
 		basefile=`echo $$file | sed -e 's,^.*/,,'`; \
