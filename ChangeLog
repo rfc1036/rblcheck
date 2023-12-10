@@ -1,9 +1,20 @@
 Changes since 20190930:
 
+Added support for Hashed DNSBLs like the Spamhaus HBL.
+
+The documentation has not been updated yet.
+For the time being build only the .txt version.
+
+Updated and cleaned up the autotools files.
+
+Removed the "rbl" script.
+
+Changes since 20020316:
+
 Marco d'Itri <md@linux.it> forked the original unmaintained code.
 
 Cleaned up the source code by updating obsolete language constructs
-and removing compatibility code for obsolete systemd.
+and removing compatibility code for obsolete systems.
 
 The documentation still needs to be updated to reflect most changes.
 
