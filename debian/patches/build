@@ -1,8 +1,0 @@
---- /dev/null
-+++ b/config.h
-@@ -0,0 +1,5 @@
-+#define HAVE_GETOPT_H
-+#define HAVE_GETADDRINFO
-+
-+#define PACKAGE "rblcheck"
-+#define VERSION "20190930"

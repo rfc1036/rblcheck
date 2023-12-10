@@ -1,17 +1,6 @@
 #!/usr/bin/make -f
-export DEB_BUILD_MAINT_OPTIONS=hardening=+all
-include /usr/share/dpkg/buildtools.mk
-
-D := $(CURDIR)/debian/rblcheck
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all future=+lfs
 
 %:
-	dh $@ --without autoreconf
-
-override_dh_clean:
-	dh_clean rblcheck docs/rblcheck.txt docs/rblcheck.html docs/rblcheck.tmp.*
-
-override_dh_auto_build:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -o rblcheck rblcheck.c $(LDFLAGS) -lresolv
-	perl -pe '/ (id|linkend)=/ and s/_/\1-/g' < docs/rblcheck.sgml > docs/rblcheck.tmp.sgml
-	cd docs && docbook2txt rblcheck.tmp.sgml && mv rblcheck.tmp.txt rblcheck.txt
+	dh $@
 
