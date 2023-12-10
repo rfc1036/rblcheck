@@ -75,7 +75,7 @@ license.
 <Chapter id="building">
 <Title>Building</Title>
 
-<Section id="building_platforms">
+<Section id="building-platforms">
 <Title>Supported Platforms</Title>
 
 <Para>
@@ -130,7 +130,7 @@ Almost any relatively POSIX platform with a resolver library.
 
 </Section>
 
-<Section id="building_compiling">
+<Section id="building-compiling">
 <Title>Compiling</Title>
 
 <Para>
@@ -165,7 +165,7 @@ which has a complete breakdown of all of your options.
 </Para>
 </Section>
 
-<Section id="building_developers">
+<Section id="building-developers">
 <Title>Note to developers</Title>
 <Para>
 You may have received the version of rblcheck that you're currently working
@@ -184,7 +184,7 @@ right now may not even apply to one of these experimental versions.
 <Para>
 If you are not building a development release, you do NOT need to read this
 section, as none of these instructions apply to you. Please read
-<XRef linkend="building_compiling"> for instructions on how to build a
+<XRef linkend="building-compiling"> for instructions on how to build a
 normal rblcheck release.
 </Para>
 <Para>
@@ -227,11 +227,11 @@ Once you've verified that you have these installed, you'll need to run
 <Application>./bootstrap</Application> from the main rblcheck source
 directory, which will create a number of the files you need to complete
 the build. At this point, you should follow the usual instructions for
-building the application (see <XRef linkend="building_compiling">).
+building the application (see <XRef linkend="building-compiling">).
 </Para>
 </Section>
 
-<Section id="building_distributors">
+<Section id="building-distributors">
 <Title>Note to distributors and packagers</Title>
 
 <Para>
@@ -281,7 +281,7 @@ from source.
 <Chapter id="using">
 <Title>Using</Title>
 
-<Section id="using_rblcheck">
+<Section id="using-rblcheck">
 <Title>rblcheck basics</Title>
 
 <Para>
@@ -354,7 +354,7 @@ address).
 </Para>
 </Section>
 
-<Section id="using_returncodes">
+<Section id="using-returncodes">
 <Title>Return codes</Title>
 
 <Para>
@@ -364,7 +364,7 @@ the number of listings that the IP address was found in).
 </Para>
 </Section>
 
-<Section id="using_verification">
+<Section id="using-verification">
 <Title>Verifying your installation</Title>
 
 <Para>
@@ -383,7 +383,7 @@ please see below about reporting bugs and finding help.
 </Para>
 </Section>
 
-<Section id="using_rbl">
+<Section id="using-rbl">
 <Title>The rbl wrapper</Title>
 
 <Para>
@@ -394,7 +394,7 @@ in <Filename class="directory">/etc</Filename> or
 <Filename class="directory">/usr/etc</Filename>), and then
 a <Filename>.rblcheckrc</Filename> from the current user's home directory.
 These files can contain any of the usual <Application>rblcheck</Application>
-command-line arguments (see <XRef linkend="using_rblcheck">), but are most
+command-line arguments (see <XRef linkend="using-rblcheck">), but are most
 useful for setting the most common RBL-style listings you use day-to-day.
 </Para>
 
@@ -426,7 +426,7 @@ also serves an important role working with other software, such as mail
 servers and email filtering programs.
 </Para>
 
-<Section id="thirdparty_procmail">
+<Section id="thirdparty-procmail">
 <Title>Procmail</Title>
 
 <Para>
@@ -519,7 +519,7 @@ your mailbox, and no errors in your log file, you're fine.
 </OrderedList>
 </Section>
 
-<Section id="thirdparty_sendmail">
+<Section id="thirdparty-sendmail">
 <Title>Sendmail</Title>
 
 <Para>
@@ -602,7 +602,7 @@ Sendmail developers if you agree with me. ;-)
 </Para>
 </Section>
 
-<Section id="thirdparty_qmail">
+<Section id="thirdparty-qmail">
 <Title>QMail</Title>
 
 <Para>
@@ -677,7 +677,7 @@ supplied above in good health.
 </Para>
 </Section>
 
-<Section id="thirdparty_inetd_smtpd">
+<Section id="thirdparty-inetd-smtpd">
 <Title>inetd and smtpd</Title>
 
 <Para>
@@ -708,7 +708,7 @@ as tcpserver from D. J. Bernstein's excellent
 </Para>
 </Section>
 
-<Section id="thirdparty_other">
+<Section id="thirdparty-other">
 <Title>Other Software</Title>
 
 <Para>
@@ -723,7 +723,7 @@ and you'll see your idea show up in here in the next release.
 <Chapter id="future">
 <Title>Future</Title>
 
-<Section id="future_todo">
+<Section id="future-todo">
 <Title>To Do</Title>
 
 <Para>
@@ -782,7 +782,7 @@ caller via a filter (after the display of PTR addresses is added)?
 
 </Section>
 
-<Section id="future_nottodo">
+<Section id="future-nottodo">
 <Title>...or Not To Do?</Title>
 
 <Para>

@@ -4,7 +4,7 @@
 ** Copyright (C) 1997, 1998, 1999, 2000, 2001,
 ** Edward S. Marshall <esm@logic.net>
 **
-** Copyright (C) 2019 Marco d'Itri <md@linux.it>.
+** Copyright (C) 2019-2023 Marco d'Itri <md@linux.it>.
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 */
 
 #include "config.h"
+#include "utils.h"
+#include "base32.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,9 +40,33 @@
 #include <getopt.h>
 #endif
 
+#ifdef WITH_HASHED_DNSBLS
+#include <ctype.h>
+#include <fcntl.h>
+#include <errno.h>
+
+#ifdef HAVE_OPENSSL_EVP
+#include <openssl/err.h>
+#include <openssl/evp.h>
+#elif defined HAVE_LIBCRYPTO
+#include <openssl/sha.h>
+#elif defined HAVE_LIBNETTLE
+#include <nettle/sha1.h>
+#include <nettle/sha2.h>
+#endif
+#endif
+
 /*-- LOCAL DEFINITIONS ------------------------------------------------------*/
 
 #define RESULT_SIZE 4096	/* What is the longest result text we support? */
+
+/* The values returned by query_type(). */
+enum query_types {
+    RBLCHECK_IP,
+    RBLCHECK_DOMAIN,
+    RBLCHECK_EMAIL,
+    RBLCHECK_FILE,
+};
 
 /*-- GLOBAL VARIABLES -------------------------------------------------------*/
 
@@ -57,34 +83,31 @@ const char *progname;
 struct opts {
     struct rbl *rblsites;
     struct rbl *uribls;
+    struct rbl *emailhashbls;
+    struct rbl *filehashbls;
     int firstmatch;
     int quiet;
     int txt;
 };
 
 /*-- PROTOTYPES -------------------------------------------------------------*/
-void *do_nofail(void *, const char *, const int);
 void version(void);
 void usage(void);
 struct rbl *togglesite(const char *, struct rbl *);
+struct rbl *cleanlist(struct rbl *);
 char *rblcheck_ip(const char *, char *, int);
 char *rblcheck_domain(const char *, char *, int);
+char *rblcheck_email(const char *, char *, int);
+char *rblcheck_file(const char *, char *, int);
 char *query_dns(const char *, const int);
-int is_domain(const char *);
+int query_type(const char *);
 int full_rblcheck(char *, struct opts *);
+char *canonicalize_email_address(const char *);
+size_t read_file(const char *, char **);
+char *sha_1_base16(const char *, size_t);
+char *sha_256_base32(const char *, size_t);
 
 /*-- FUNCTIONS --------------------------------------------------------------*/
-
-void *do_nofail(void *ptr, const char *file, const int line)
-{
-    if (ptr)
-	return ptr;
-
-    fprintf(stderr, "Memory allocation failure at %s:%d.", file, line);
-    exit(-1);
-}
-
-#define NOFAIL(ptr) do_nofail((ptr), __FILE__, __LINE__)
 
 /* version()
  * Display the version of this program back to the user. */
@@ -92,7 +115,7 @@ void version(void)
 {
     fprintf(stderr,
 	    "%s %s\nCopyright (C) 1997, 1998, 1999, 2000, 2001 Edward S. Marshall\n"
-	    "Copyright (C) 2019 Marco d'Itri\n",
+	    "Copyright (C) 2019-2023 Marco d'Itri\n",
 	    PACKAGE, VERSION);
 }
 
@@ -112,8 +135,9 @@ void usage(void)
     -s <service> Toggle a service to the DNSBL services list\n\
     -h, -?       Display this help message\n\
     -v           Display version information\n\
-    <address>    An IP address to look up; specify '-' to read multiple\n\
-                 addresses from standard input.\n",
+    <address>    An IP or email address or file to look up;\n\
+                 specify '@/file/name' to read a file;\n\
+		 specify '-' to read multiple elements from standard input.\n",
 	    progname);
 }
 
@@ -151,6 +175,21 @@ struct rbl *togglesite(const char *sitename, struct rbl *sites)
     return sites;
 }
 
+struct rbl *cleanlist(struct rbl *list)
+{
+    struct rbl *ptr;
+
+    ptr = list;
+    while (ptr != NULL) {
+	list = ptr->next;
+	free(ptr->site);
+	free(ptr);
+	ptr = list;
+    }
+
+    return list;
+}
+
 /* rblcheck_ip()
  * Checks the specified dotted-quad address against the provided RBL
  * domain. If "txt" is non-zero, we perform a TXT record lookup. We
@@ -170,15 +209,10 @@ char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
     hints.ai_flags = AI_NUMERICHOST | AI_NUMERICSERV;
 
     rc = getaddrinfo(addr, NULL, &hints, &res);
-    if (rc == EAI_NONAME || res == NULL) {
-	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
-	exit(-1);
-    }
-    if (rc < 0) {
-	fprintf(stderr, "%s: warning: getaddrinfo(%s): %s\n",
-		progname, addr, gai_strerror(rc));
-	exit(-1);
-    }
+    if (rc == EAI_NONAME || res == NULL)
+	err_quit("warning: invalid address '%s'", addr);
+    if (rc < 0)
+	err_quit("warning: getaddrinfo(%s): %s", addr, gai_strerror(rc));
 
     /* 32 characters and 32 dots in a reversed v6 address, plus 1 for null */
     domain = NOFAIL(malloc(32 + 32 + 1 + strlen(rbldomain)));
@@ -215,9 +249,8 @@ char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
 		rbldomain
 	);
     } else {
-	fprintf(stderr, "%s: getaddrinfo(%s) returned ai_family=%d!\n",
-		progname, addr, res->ai_family);
-	exit(-1);
+	err_quit("getaddrinfo(%s) returned ai_family=%d!",
+		addr, res->ai_family);
     }
 
     freeaddrinfo(res);
@@ -227,9 +260,7 @@ char *rblcheck_ip(const char *addr, char *rbldomain, int txt)
     if (sscanf(addr, "%d.%d.%d.%d", &a, &b, &c, &d) != 4
 	    || a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255
 	    || d < 0 || d > 255) {
-	fprintf(stderr, "%s: warning: invalid address '%s'\n", progname, addr);
-	exit(-1);
-    }
+	err_quit("warning: invalid address '%s'", addr);
 
     /* 16 characters max in a dotted-quad address, plus 1 for null */
     domain = NOFAIL(malloc(17 + strlen(rbldomain)));
@@ -331,42 +362,279 @@ char *query_dns(const char *domain, const int txt)
 
 char *rblcheck_domain(const char *addr, char *rbldomain, int txt)
 {
-    char *domain;
+    char *domain, *result;
 
     domain = NOFAIL(malloc(strlen(addr) + 1 + strlen(rbldomain) + 1));
     strcpy(domain, addr);
     strcat(domain, ".");
     strcat(domain, rbldomain);
 
-    return query_dns(domain, txt);
+    result = query_dns(domain, txt);
+    free(domain);
+    return result;
 }
 
-int is_domain(const char *s)
+#ifdef WITH_HASHED_DNSBLS
+
+/* https://docs.spamhaus.com/datasets/docs/source/10-data-type-documentation/datasets/030-datasets.html#email-email */
+char *canonicalize_email_address(const char *email)
+{
+    char *at, *plus, *canonical;
+
+    canonical = NOFAIL(malloc(strlen(email) + 1));
+
+    /* copy the address and convert it to lower case */
+    for(int i = 0; email[i] != '\0'; i++)
+	canonical[i] = tolower(email[i]);
+
+    at = strchr(canonical, '@');
+    if (!at)
+	return canonical;
+
+    /* remove the +parameter from the left part */
+    plus = strchr(canonical, '+');
+    if (plus && (at - plus) > 0)
+	memmove(plus, at, strlen(at) + 1);
+
+    /* replace @googlemail.com with @gmail.com */
+    if (strcmp(at + 1, "googlemail.com") == 0)
+	strcpy(at + 1, "gmail.com");
+
+    if (strcmp(at + 1, "gmail.com") == 0) {
+	/* remove the dots from the left part */
+	char *s = canonical;
+	char *d = canonical;
+	int copy = 0;
+
+	do {
+	    if (*s == '@')
+		copy = 1;
+	    if (copy || *s != '.')
+		*d++ = *s;
+	} while (*s++ != '\0');
+    }
+
+    return canonical;
+}
+
+size_t read_file(const char *path, char **buf_result)
+{
+    int fd;
+    char buf[4096];
+    ssize_t n;
+    char *str = NULL;
+    size_t len = 0;
+
+    fd = open(path, O_RDONLY);
+    if (fd < 0)
+	err_sys("cannot open file '%s'", path);
+
+    while ((n = read(fd, buf, sizeof(buf))) > 0) {
+	if (n < 0) {
+	    if (errno == EAGAIN)
+		continue;
+	    err_sys("cannot read file '%s'", path);
+	}
+	str = realloc(str, len + n + 1);
+	memcpy(str + len, buf, n);
+	len += n;
+	str[len] = '\0';
+    }
+
+    close(fd);
+    *buf_result = str;
+    return len;
+}
+
+char *rblcheck_email(const char *email, char *rbldomain, int txt)
+{
+    char *hash, *canon_email, *result;
+
+    canon_email = canonicalize_email_address(email);
+#ifdef WITH_SHA_256_EMAIL_HASHES
+    hash = sha_256_base32(canon_email, strlen(canon_email));
+#else
+    hash = sha_1_base16(canon_email, strlen(canon_email));
+#endif
+    free(canon_email);
+    result = rblcheck_domain(hash, rbldomain, txt);
+    free(hash);
+    return result;
+}
+
+char *rblcheck_file(const char *path, char *rbldomain, int txt)
+{
+    char *hash, *file_content, *result;
+    size_t length;
+
+    length = read_file(path, &file_content);
+    hash = sha_256_base32(file_content, length);
+    free(file_content);
+    result = rblcheck_domain(hash, rbldomain, txt);
+    free(hash);
+    return result;
+}
+
+#ifdef HAVE_OPENSSL_EVP
+
+unsigned char *openssl_hash(const char *, size_t, const EVP_MD*);
+
+unsigned char *openssl_hash(const char *buf, size_t length, const EVP_MD *type)
+{
+    EVP_MD_CTX *ctx;
+    static unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned int hash_length;
+
+    ctx = EVP_MD_CTX_new();
+    if (!ctx) {
+        printf("EVP_MD_CTX_new() failed: %s!\n",
+		ERR_error_string(ERR_get_error(), NULL));
+        exit(-1);
+    }
+
+    if (!EVP_DigestInit_ex(ctx, type, NULL)) {
+        printf("EVP_DigestInit_ex() failed: %s!\n",
+		ERR_error_string(ERR_get_error(), NULL));
+        exit(-1);
+    }
+
+    if (!EVP_DigestUpdate(ctx, buf, length)) {
+        printf("EVP_DigestUpdate() failed: %s!\n",
+		ERR_error_string(ERR_get_error(), NULL));
+        exit(-1);
+    }
+
+    if (!EVP_DigestFinal_ex(ctx, hash, &hash_length)) {
+        printf("EVP_DigestFinal_ex() failed: %s!\n",
+		ERR_error_string(ERR_get_error(), NULL));
+        exit(-1);
+    }
+
+    EVP_MD_CTX_free(ctx);
+
+    return hash;
+}
+
+char *sha_1_base16(const char *buf, size_t length)
+{
+    unsigned char *hash;
+
+    hash = openssl_hash(buf, length, EVP_sha1());
+    return NOFAIL(base16_encode(hash, 20));
+}
+
+char *sha_256_base32(const char *buf, size_t length)
+{
+    unsigned char *hash;
+
+    hash = openssl_hash(buf, length, EVP_sha256());
+    return NOFAIL(base32_encode(hash, 32));
+}
+
+#elif defined HAVE_LIBCRYPTO
+
+char *sha_1_base16(const char *buf, size_t length)
+{
+    SHA_CTX ctx;
+    unsigned char hash[SHA_DIGEST_LENGTH];
+
+    SHA1_Init(&ctx);
+    SHA1_Update(&ctx, buf, length);
+    SHA1_Final(hash, &ctx);
+
+    return NOFAIL(base16_encode(hash, SHA_DIGEST_LENGTH));
+}
+
+char *sha_256_base32(const char *buf, size_t length)
+{
+    SHA256_CTX ctx;
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+
+    SHA256_Init(&ctx);
+    SHA256_Update(&ctx, buf, length);
+    SHA256_Final(hash, &ctx);
+
+    return NOFAIL(base32_encode(hash, SHA256_DIGEST_LENGTH));
+}
+
+#elif defined HAVE_LIBNETTLE
+
+char *sha_1_base16(const char *buf, size_t length)
+{
+    struct sha1_ctx ctx;
+    unsigned char hash[SHA1_DIGEST_SIZE];
+
+    sha1_init(&ctx);
+    sha1_update(&ctx, length, (const uint8_t *)buf);
+    sha1_digest(&ctx, SHA1_DIGEST_SIZE, hash);
+
+    return NOFAIL(base16_encode(hash, SHA1_DIGEST_SIZE));
+}
+
+char *sha_256_base32(const char *buf, size_t length)
+{
+    struct sha256_ctx ctx;
+    unsigned char hash[SHA256_DIGEST_SIZE];
+
+    sha256_init(&ctx);
+    sha256_update(&ctx, length, (const uint8_t *)buf);
+    sha256_digest(&ctx, SHA256_DIGEST_SIZE, hash);
+
+    return NOFAIL(base32_encode(hash, SHA256_DIGEST_SIZE));
+}
+
+#else
+#error "No crypto library has been enabled"
+#endif
+
+#else /* WITH_HASHED_DNSBLS */
+
+char *rblcheck_email(const char *email, char *rbldomain, int txt)
+{
+    err_quit("Support for hashed DNSBLs is not enabled!");
+}
+
+char *rblcheck_file(const char *email, char *rbldomain, int txt)
+{
+    return rblcheck_email(email, rbldomain, txt);
+}
+
+#endif /* WITH_HASHED_DNSBLS */
+
+int query_type(const char *s)
 {
     const char *p;
 
+    /* is a file name */
+    if (s[0] == '@')
+	return RBLCHECK_FILE;
+
+    /* looks like an email address */
+    if (strrchr(s, '@'))
+	return RBLCHECK_EMAIL;
+
     /* not a valid domain, but hopefully a valid IPv6 address */
     if (strrchr(s, ':'))
-	return 0;
+	return RBLCHECK_IP;
 
     /* does not contain a dot nor a colon, so it is not a v4 or v6 IP */
     p = strrchr(s, '.');
     if (!p)
-	return 1;
+	return RBLCHECK_DOMAIN;
 
     /* check the character after the dot */
     p++;
 
     /* a trailing dot is invalid, so have getaddrinfo() fail on it */
     if (*p == '\0')
-	return 0;
+	return RBLCHECK_IP;
 
     /* contains an alphabetic character */
     for (p = s; *p != '\0'; p++)
 	if ((*p >= 'a' && *p <= 'z') || (*p >= 'a' && *p <= 'z'))
-	    return 1;
+	    return RBLCHECK_DOMAIN;
 
-    return 0;
+    return RBLCHECK_IP;
 }
 
 /* full_rblcheck
@@ -375,19 +643,27 @@ int is_domain(const char *s)
 int full_rblcheck(char *addr, struct opts *opt)
 {
     int count = 0;
-    int domain;
+    int type;
     char *response;
     struct rbl *ptr;
 
-    domain = is_domain(addr);
-    if (domain)
+    type = query_type(addr);
+    if (type == RBLCHECK_DOMAIN)
 	ptr = opt->uribls;
+    else if (type == RBLCHECK_EMAIL)
+	ptr = opt->emailhashbls;
+    else if (type == RBLCHECK_FILE)
+	ptr = opt->filehashbls;
     else
 	ptr = opt->rblsites;
 
     for (; ptr != NULL; ptr = ptr->next) {
-	if (domain)
+	if (type == RBLCHECK_DOMAIN)
 	    response = rblcheck_domain(addr, ptr->site, opt->txt);
+	else if (type == RBLCHECK_EMAIL)
+	    response = rblcheck_email(addr, ptr->site, opt->txt);
+	else if (type == RBLCHECK_FILE)
+	    response = rblcheck_file(addr + 1, ptr->site, opt->txt);
 	else
 	    response = rblcheck_ip(addr, ptr->site, opt->txt);
 	if (!opt->quiet || response)
@@ -425,9 +701,15 @@ int main(int argc, char *argv[])
 /* Hack to handle the easy addition of sites at compile time. */
 #define SITE(x) opt->rblsites = togglesite( (x), opt->rblsites );
 #define URI_SITE(x) opt->uribls = togglesite( (x), opt->uribls );
+#define EMAIL_HASH_SITE(x) opt->emailhashbls = \
+    togglesite( (x), opt->emailhashbls );
+#define FILE_HASH_SITE(x) opt->filehashbls = \
+    togglesite( (x), opt->filehashbls );
 #include "sites.h"
 #undef SITE
 #undef URI_SITE
+#undef EMAIL_HASH_SITE
+#undef FILE_HASH_SITE
 
     progname = argv[0];
 
@@ -447,32 +729,36 @@ int main(int argc, char *argv[])
 	    break;
 	case 'l':
 	    /* Display supported RBL systems. */
+	    if (opt->rblsites)
+		puts("# IP-based DNSBLs:");
 	    for (ptr = opt->rblsites; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
+	    if (opt->uribls)
+		puts("# Domain-based DNSBLs:");
 	    for (ptr = opt->uribls; ptr != NULL; ptr = ptr->next)
+		printf("%s\n", ptr->site);
+	    if (opt->emailhashbls)
+		puts("# Email-based DNSBLs:");
+	    for (ptr = opt->emailhashbls; ptr != NULL; ptr = ptr->next)
+		printf("%s\n", ptr->site);
+	    if (opt->filehashbls)
+		puts("# File-based DNSBLs:");
+	    for (ptr = opt->filehashbls; ptr != NULL; ptr = ptr->next)
 		printf("%s\n", ptr->site);
 	    exit(0);
 	case 's':
 	    /* Toggle a particular zone. */
 	    opt->rblsites = togglesite(optarg, opt->rblsites);
 	    opt->uribls = togglesite(optarg, opt->uribls);
+	    opt->emailhashbls = togglesite(optarg, opt->emailhashbls);
+	    opt->filehashbls = togglesite(optarg, opt->filehashbls);
 	    break;
 	case 'c':
 	    /* Clear the rbl zones. */
-	    ptr = opt->rblsites;
-	    while (ptr != NULL) {
-		opt->rblsites = ptr->next;
-		free(ptr->site);
-		free(ptr);
-		ptr = opt->rblsites;
-	    }
-	    ptr = opt->uribls;
-	    while (ptr != NULL) {
-		opt->uribls = ptr->next;
-		free(ptr->site);
-		free(ptr);
-		ptr = opt->uribls;
-	    }
+	    opt->rblsites = cleanlist(opt->rblsites);
+	    opt->uribls = cleanlist(opt->uribls);
+	    opt->emailhashbls = cleanlist(opt->emailhashbls);
+	    opt->filehashbls = cleanlist(opt->filehashbls);
 	    break;
 	case '?':
 	case 'h':
@@ -487,18 +773,14 @@ int main(int argc, char *argv[])
 
     /* Did they tell us to check anything? */
     if (optind == argc) {
-	fprintf(stderr, "%s: no IP address(es) specified\n", progname);
+	fprintf(stderr, "%s: no address(es) specified\n", progname);
 	usage();
 	exit(-1);
     }
 
     /* Do we have any listings to search? */
-    if (!opt->rblsites) {
-	fprintf(stderr,
-		"%s: no rbl listing(s) specified (need '-s <zone>'?)\n",
-		progname);
-	exit(-1);
-    }
+    if (!opt->rblsites)
+	err_quit("no DNSBL domains(s) specified (need '-s <domain>'?)");
 
     /* Loop through the command line. */
     while (optind < argc) {

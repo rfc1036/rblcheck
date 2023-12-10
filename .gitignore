@@ -1,0 +1,17 @@
+.deps/
+autom4te.cache/
+build-aux/
+*.o
+*~
+Makefile
+Makefile.in
+docs/Makefile
+docs/Makefile.in
+aclocal.m4
+config.h
+config.h.in
+config.log
+config.status
+configure
+rblcheck
+stamp-h1

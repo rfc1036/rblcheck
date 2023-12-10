@@ -30,5 +30,5 @@ for the MAPS project DNSBL filter).
 To learn how to build this program, please read docs/INSTALL. Seriously.
 Make sure to check the default lists of DNSBLs in the "sites.h" file.
 
-The official home for rblcheck is https://github.com/rblcheck/whois/issues .
+The official home for rblcheck is https://github.com/rfc1036/rblcheck .
 
