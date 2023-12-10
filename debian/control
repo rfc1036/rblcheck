@@ -5,6 +5,8 @@ Maintainer: Marco d'Itri <md@linux.it>
 Standards-Version: 4.6.2.0
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 13),
+ pkgconf,
+ libssl-dev,
  docbook-utils,
  lynx,
 Vcs-Git: https://github.com/rfc1036/rblcheck.git
